@@ -26,6 +26,26 @@
 
 // javascript code
 window.onload = function(){
+
+	// var quizLen = document.getElementsByClassName('exam_wrap').length;
+
+	// for(var i = 0; i < quizLen; i++){
+	// 	var examObj = document.getElementsByClassName('exam_wrap')[i];
+	// 	examObj.getElementsByTagName('button')[i].onclick = function(){
+	// 		var examChild = examObj.getElementsByClassName('exam_q')[0];
+	// 		var examChildElement = getSelector(i, examChild);
+	// 		for(var j = 0; j < examChildElement.length; j++){
+	// 			console.log(examChildElement.length);
+	// 			examChildElement[j].style.backgroundColor = 'yellow';
+	// 		}
+	// 	};
+	// }
+
+	// function getSelector(i, examChild){
+	// 	return examChild.querySelectorAll('*');
+	// }
+
+
 	var examObj1 = document.getElementsByClassName('exam_wrap')[0];
 	examObj1.getElementsByTagName('button')[0].onclick = function(){
 		var examChild = examObj1.getElementsByClassName('exam_q')[0].querySelectorAll('*');
