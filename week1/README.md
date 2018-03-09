@@ -1,13 +1,12 @@
 # 1회차
-==========
 1. 1_js_dom keypoint 스터디
 2. 2_jqeury_dom keypoint 스터디
 3. 과제
 
 
 ## 1) javascript DOM 스터디 한 것
+### __메서드__
 ----------
-+ __메서드__
 	+ item(index)
 	+ createElement('요소')
 	+ createTextNode('텍스트')
@@ -22,7 +21,8 @@
 		+ element 그대로 복사
 	+ element.removeChild(삭제할 요소)
 
-+ 노드 접근 속성
+### __노드 접근 속성__
+----------
 	+ childNodes
 	+ parentNode
 	+ previousSibling
@@ -36,9 +36,10 @@
 		+ 요소안의 텍스트 수정할 때 사용
 
 
-+ __nodeType 속성__
+### __nodeType 속성__
 	+ 사용법 node.nodeType
 	+ 숫자로 type을 판별
+----------
 | node type  |  value |
 |---|---|
 | ELEMENT NODE | 1 |
