@@ -1,7 +1,7 @@
 # 1회차
 1. 1_js_dom keypoint 스터디
 2. 2_jqeury_dom keypoint 스터디
-3. 과제하기
+3. 과제하기!
 
 
 ## 1) javascript DOM 스터디 한 것
