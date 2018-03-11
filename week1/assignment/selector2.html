@@ -5,8 +5,74 @@
 <meta charset="utf-8">
 <title>exam</title>
 <link rel="stylesheet" href="common.css" />
+<script src="http://code.jquery.com/jquery-latest.js"></script>
 </head>
 <body>
+	<script>
+
+	//jQuery
+	$(function(){
+		var exWrap1 = $('.exam_wrap:eq(0)');
+		exWrap1.find('button').on('click', function(){
+			exWrap1.find('.exam_q div:first').css('background-color','yellow');
+			//exWrap1.find('.exam_q div').first().css('background-color', 'yellow');
+		});
+
+		var exWrap2 = $('.exam_wrap:eq(1)');
+		exWrap2.find('button').on('click', function () {
+			exWrap2.find('.exam_q div:last').css('background-color', 'yellow');
+			//exWrap1.find('.exam_q').last().css('background-color', 'yellow');
+		});
+
+		var exWrap3 = $('.exam_wrap:eq(2)');
+		exWrap3.find('button').on('click', function () {
+			exWrap3.find('.exam_q div:first-child').css('background-color', 'yellow');
+		});
+
+		var exWrap4 = $('.exam_wrap:eq(3)');
+		exWrap4.find('button').on('click', function () {
+			exWrap4.find('.exam_q div:last-child').css('background-color', 'yellow');
+		});
+
+		var exWrap5 = $('.exam_wrap:eq(4)');
+		exWrap5.find('button').on('click', function () {
+			exWrap5.find('.exam_q div:nth-child(2)').css('background-color', 'yellow');
+		});
+
+		var exWrap6 = $('.exam_wrap:eq(5)');
+		exWrap6.find('button').on('click', function () {
+			//exWrap6.find('.exam_q div:eq(2)').css('background-color', 'yellow');
+			exWrap6.find('.exam_q div').eq(2).css('background-color', 'yellow');
+		});
+
+		var exWrap7 = $('.exam_wrap:eq(6)');
+		exWrap7.find('button').on('click', function () {
+			//exWrap7.find('.exam_q div:gt(2)').css('background-color', 'yellow');
+			exWrap7.find('.exam_q div:nth-child(3)').nextAll().css('background-color', 'yellow');
+
+		});
+
+		var exWrap8 = $('.exam_wrap:eq(7)');
+		exWrap8.find('button').on('click', function () {
+			//exWrap8.find('.exam_q div:lt(2)').css('background-color', 'yellow');
+			exWrap8.find('.exam_q div:nth-child(3)').prevAll().css('background-color', 'yellow');
+		});
+	})
+
+
+	//javascirpt
+	// window.onload = function(){
+	// 	var exWrap1 = document.getElementsByClassName('exam_wrap')[0];
+	// 	exWrap1.getElementsByTagName('button')[0].onclick = function(){
+	// 		var exChild = exWrap1.getElementsByClassName('exam_q')[0].firstChild;
+	// 		for(var i = 0; i < exChild.length; i++){
+	// 			console.log(exChild[i]);
+	// 			exChild[i].style.backgroundColor = 'yellow';
+	// 		}
+	// 	};
+
+	// }
+	</script>
 <!-- wrapper [s] -->
 <div id="wrapper">
 	<!-- header [s] -->
