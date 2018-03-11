@@ -1,6 +1,6 @@
 # 1회차
 1. 1_js_dom keypoint
-2. 2_jqeury_dom keypoint
+2. 2_jquery_dom keypoint
 3. 과제
 4. 공부 후 헷갈리는 것 정리
 
@@ -43,7 +43,7 @@
 |---|---|
 | ELEMENT NODE | 1 |
 | TEXT NODE  | 3 |
-| ATTRIBUTE NOME  | 2  |
+| ATTRIBUTE NODE  | 2  |
 
 
 ### style 접근과 제거
@@ -76,6 +76,9 @@
 - selector.append("추가내용") 
 - selector.text("텍스트 변경")
 - selector.css("속성","값 변경")
+- selector.html() 
+	- 해당 영역에 HTML추가 
+	- innerHTML과 같다.(page.innerHTML += "텍스트")
 
 
 ### style 제거
