@@ -83,7 +83,7 @@
 
 ### style 제거
 ---
-- selector__[0].style.removeProperty("border")__
+- selector[0].__style.removeProperty("border")__
 
 
 ### attribute 제어
