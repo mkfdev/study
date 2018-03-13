@@ -64,7 +64,7 @@
 
 			var exWrap4 = document.getElementsByClassName('exam_wrap')[3];
 			exWrap4.getElementsByTagName('button')[0].onclick = function(){
-				var exChild = exWrap4.getElementsByClassName('exam_q')[0].lastElementChild;
+				var exChild = exWrap4.getElementsByClassName('exam_q')[0].childNodes;
 				var exElementChild = [];
 				for(var i = 0; i < exChild.length; i++){
 					//nodeType이 요소타입일때만
