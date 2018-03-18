@@ -1,0 +1,191 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>exam</title>
+<link rel="stylesheet" href="common.css" />
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+
+	$(function(){
+		var container = $('#container'),
+			examWrap1 = container.find('.exam_wrap').eq(0),
+			examWrap2 = container.find('.exam_wrap').eq(1),
+			examWrap3 = container.find('.exam_wrap').eq(2),
+			examWrap4 = container.find('.exam_wrap').eq(3),
+			button1 = examWrap1.find('button').eq(0),
+			button2 = examWrap2.find('button').eq(0),
+			button3 = examWrap3.find('button').eq(0),
+			buttonPrev4 = examWrap4.find('button').eq(0),
+			buttonNext4 = examWrap4.find('button').eq(1),
+			examqEle1 = examWrap1.find('.exam_q > ul'),
+			examqEle2 = examWrap2.find('.exam_q > ul'),
+			examqEle3 = examWrap3.find('.exam_q > ul'),
+			examqEle4 = examWrap4.find('.exam_q > ul'),
+			examLi01 = examqEle1.children(),
+			examLi02 = examqEle2.children(),
+			examLi03 = examqEle3.children(),
+			examLi04 = examqEle4.children(),
+			firstIdx = 0,
+			lastIdx = examLi02.length-1,
+			prevIdx = 0,
+			nextIdx = 1,
+			oldIdx = 0,
+			newIdx = 1,
+
+			qResult1 = function(){
+
+				if(firstIdx == examLi01.length){
+					alert('end');
+					return;
+				}
+				examLi01.eq(firstIdx).css('background-color','yellow');
+				firstIdx++;
+			},
+
+			qResult2 = function(){
+				if(lastIdx < 0){
+					alert('end');
+					return;
+				}
+				examLi02.eq(lastIdx).css('background-color','yellow');
+				lastIdx--;
+			},
+
+			qResult3 = function(){
+				if(nextIdx == examLi03.length){
+					alert('end');
+					return;
+				}
+				examLi03.eq(prevIdx).css('background-color','');
+				examLi03.eq(nextIdx).css('background-color','yellow');
+				prevIdx = nextIdx;
+				nextIdx++;
+			},
+
+			qResultNext4 = function(){
+				if(newIdx == examLi04.length){
+					newIdx = 0;
+				}
+				console.log(oldIdx, newIdx);
+				
+				examLi04.eq(oldIdx).removeClass('active');
+				examLi04.eq(newIdx).addClass('active');
+				oldIdx = newIdx;
+				newIdx++;
+			},
+
+			qResultPrev4 = function(){
+				console.log('prev  '+oldIdx, newIdx)
+				if(oldIdx < 0){
+					oldIdx = examLi04.length-1;
+				}
+				oldIdx--;
+				newIdx--;
+				console.log(newIdx);
+				examLi04.eq(newIdx).removeClass('active');
+				examLi04.eq(oldIdx).addClass('active');
+				newIdx = oldIdx;
+				console.log('new'+newIdx)
+				
+
+			};
+
+			button1.on('click', qResult1);
+			button2.on('click', qResult2);
+			button3.on('click', qResult3);
+			//buttonPrev4.on('click', qResultPrev4);
+			buttonNext4.on('click', qResultNext4);
+	});
+</script>
+
+</head>
+<body>
+<!-- wrapper [s] -->
+<div id="wrapper">
+	<!-- header [s] -->
+	<div id="header">
+	</div>
+	<!-- header [e] -->
+	<hr />
+	<!-- container [s] -->
+	<div id="container">
+		<div class="exam_wrap">
+			<h1>Q. 첫번째부터 순서대로 선택하세요 (style 제어)</h1>
+			<div class="exam_q"><!-- 부모 -->
+				<ul>
+					<li>one</li>
+					<li>two</li>
+					<li>three</li>
+					<li>four</li>
+					<li>five</li>
+					<li>six</li>
+					<li>seven</li>
+					<li>eight</li>
+				</ul>
+			</div>
+			<button type="button">다음</button>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. 마지막부터 역순대로 선택하세요 (style 제어)</h1>
+			<div class="exam_q"><!-- 부모 -->
+				<ul>
+					<li>one</li>
+					<li>two</li>
+					<li>three</li>
+					<li>four</li>
+					<li>five</li>
+					<li>six</li>
+					<li>seven</li>
+				</ul>
+			</div>
+			<button type="button">이전</button>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. 첫번째부터 순서대로 선택하고, 전에 선택했던 Element의 배경색을 지우세요 (style 제어)</h1>
+			<div class="exam_q"><!-- 부모 -->
+				<ul>
+					<li style="background-color:yellow">one</li>
+					<li>two</li>
+					<li>three</li>
+					<li>four</li>
+					<li>five</li>
+					<li>six</li>
+					<li>seven</li>
+					<li>eight</li>
+					<li>nine</li>
+				</ul>
+			</div>
+			<!-- <button type="button">이전</button> -->
+			<button type="button">다음</button>
+		</div>
+        <div class="exam_wrap">
+            <h1>Q. 첫번째부터 순서대로 선택하고, 전에 선택했던 Element의 배경색을 지우시고, 무한loop 돌게 하세요 (클래스 제어)</h1>
+            <div class="exam_q"><!-- 부모 -->
+                <ul>
+                    <li class="active">one</li>
+                    <li>two</li>
+                    <li>three</li>
+                    <li>four</li>
+                    <li>five</li>
+                    <li>six</li>
+                    <li>seven</li>
+                    <li>eight</li>
+                    <li>nine</li>
+                </ul>
+            </div>
+            <button type="button">이전</button>
+            <button type="button">다음</button>
+        </div>
+	</div>
+	<!-- container [e] -->
+	<hr />
+	<!-- footer [s] -->
+	<div id="footer">
+	</div>
+	<!-- footer [e] -->
+</div>
+<!-- wrapper [e] -->
+</body>
+</html>

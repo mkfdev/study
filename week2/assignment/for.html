@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>exam</title>
+<link rel="stylesheet" href="common.css" />
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script>
+$(function(){
+
+	// exam1 [s]
+	// var exam1 = $('.exam_q').eq(0);
+	// exam1.append('<input type="checkbox">');
+	// exam1 [e]
+
+	// var exam3 = $('.exam_q').eq(2);
+	// exam3.append('8 X 1 = 8 <br>');
+
+	var container = $('#container'),
+		examWrap = container.find('.exam_wrap'),
+		examResult = null,
+
+		changeElement = function(){
+			for(var i=0; i<examWrap.length; i++){
+				switch(i){
+					case 0: 
+						examResult = examWrap.eq(0).find('.exam_q');
+						drawInputElement(examResult);
+						break;
+					case 1:
+						examResult = examWrap.eq(1).find('.exam_q');
+						drawInputChkElement(examResult);
+						break;
+					case 2:
+						examResult = examWrap.eq(2).find('.exam_q');
+						drawGugudan8(examResult);
+						break;
+					case 3:
+						examResult = examWrap.eq(3).find('.exam_q');
+						drawGugudanAll(examResult);
+						break;
+					default:
+						alert('더이상 문제가 없는데..?');
+						break;
+				}
+			}
+		},
+		drawInputElement = function(examResult){
+			var checkNum = 0;
+
+			while(checkNum < 5){
+				examResult.append('<label>'+(checkNum+1)+'. <input type="text"></label><br>');
+				checkNum++;
+			}
+		},
+
+		drawInputChkElement = function(examResult){
+			for(var i=1; i<6; i++){
+				if(i%2 == 0)
+					examResult.append('<label>' +i+ '. <input type="text"></label><br>');
+				else if(i%2 == 1){
+					examResult.append('<input type="checkbox" id="chk'+i+'"><label for="chk'+i+'">' + i + '번째 Checkbox</label><br>');
+				}
+			}
+		},
+
+		drawGugudan8 = function(examResult){
+			for(var i=1; i<10; i++){	
+				examResult.append('8 X ' + i + ' = ' + (8*i)+'<br>');
+			}
+		},
+
+		drawGugudanAll = function (examResult) {
+			var output='',
+				arr = [];
+			for (var i = 2; i < 10; i++) {
+				for (var j=1; j<10; j++) {
+					arr.push(i+'x'+j+'='+(i*j));
+				}
+			}
+
+			//examResult[0].innerHTML = arr.join('');
+			// examResult.get(0).innerHTML += '<ul><li>';
+			examResult.get(0).innerHTML += arr.join('<br>');
+			// examResult.get(0).innerHTML += '</li></ul>';
+			// console.log(examResult);
+		};
+
+
+		changeElement();
+
+});
+</script>
+</head>
+<body>
+<!-- wrapper [s] -->
+
+<div id="example">
+    <span>A child element</span>
+</div>
+<div id="wrapper">
+	<!-- header [s] -->
+	<div id="header">
+	</div>
+	<!-- header [e] -->
+	<hr />
+	<!-- container [s] -->
+	<div id="container">
+		<div class="exam_wrap">
+			<h1>Q. while 문으로 5개의 input 을 출력하세요.</h1>
+			<div class="exam_q">
+			</div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. for 문으로 5개의 input 을 만들되, 짝수는 text / 홀수는 checkbox 를 출력하세요.</h1>
+			<div class="exam_q">
+			</div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. for 문으로 구구단 8단을 출력하세요.</h1>
+			<div class="exam_q">
+			</div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. for/while 문 2개로 구구단을 출력하세요.</h1>
+			<div class="exam_q">
+			</div>
+		</div>
+	</div>
+	<!-- container [e] -->
+	<hr />
+	<!-- footer [s] -->
+	<div id="footer">
+	</div>
+	<!-- footer [e] -->
+</div>
+<!-- wrapper [e] -->
+</body>
+</html>
