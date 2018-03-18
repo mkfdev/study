@@ -303,14 +303,15 @@ console.log(object1.hasOwnProperty('property1')); // true
 console.log(object1.hasOwnProperty('toString')); //false
 
 console.log(object1.hasOwnProperty('hasOwnProperty')); //false
+```
 
---------------------
-
+``` javscript
 var s = new String("Sample"); // string 객체 생성  
 
 console.log(s.hasOwnProperty("split"));    
 
 console.log(String.prototype.hasOwnProperty("split")); // true  
 ```
+
 
 ---
