@@ -4,20 +4,15 @@
 <head>
 <meta charset="utf-8">
 <title>exam</title>
-<link rel="stylesheet" href="common.css" />
+<link rel="stylesheet" href="common.css"/>
 <script src="http://code.jquery.com/jquery-latest.js"></script>
 <script src="../../js/jquery-1.12.4.min.js" type="text/javascript"></script>
+<!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/8.7/styles/monokai_sublime.min.css"> -->
+<script src="//cdn.jsdelivr.net/highlight.js/8.7/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+
 <script>
 $(function(){
-
-	// exam1 [s]
-	// var exam1 = $('.exam_q').eq(0);
-	// exam1.append('<input type="checkbox">');
-	// exam1 [e]
-
-	// var exam3 = $('.exam_q').eq(2);
-	// exam3.append('8 X 1 = 8 <br>');
-
 	var container = $('#container'),
 		examWrap = container.find('.exam_wrap'),
 		examResult = null,
@@ -42,7 +37,7 @@ $(function(){
 						drawGugudanAll(examResult);
 						break;
 					default:
-						alert('더이상 문제가 없는데..?');
+						alert('더이상 문제가 없습니당');
 						break;
 				}
 			}
@@ -73,33 +68,175 @@ $(function(){
 		},
 
 		drawGugudanAll = function (examResult) {
-			var output='',
-				arr = [];
+			var arr = [];
+
 			for (var i = 2; i < 10; i++) {
+					arr.push('<ul>');
 				for (var j=1; j<10; j++) {
-					arr.push(i+'x'+j+'='+(i*j));
+					arr.push('<li>'+i+'x'+j+'='+(i*j)+'</li>');
 				}
+					arr.push('</ul>');
 			}
 
-			//examResult[0].innerHTML = arr.join('');
-			// examResult.get(0).innerHTML += '<ul><li>';
-			examResult.get(0).innerHTML += arr.join('<br>');
-			// examResult.get(0).innerHTML += '</li></ul>';
-			// console.log(examResult);
+			examResult.get(0).innerHTML += arr.join('');
 		};
-
-
 		changeElement();
 
 });
 </script>
+<style>
+	/* Base16 Atelier Dune Light - Theme */
+	/* Atelier-Dune Comment */
+	.hljs-comment,
+	.hljs-quote {
+	  color: #7d7a68;
+	}
+
+	/* Atelier-Dune Red */
+	.hljs-variable,
+	.hljs-template-variable,
+	.hljs-attribute,
+	.hljs-tag,
+	.hljs-name,
+	.hljs-regexp,
+	.hljs-link,
+	.hljs-name,
+	.hljs-selector-id,
+	.hljs-selector-class {
+	  color: #d73737;
+	}
+
+	/* Atelier-Dune Orange */
+	.hljs-number,
+	.hljs-meta,
+	.hljs-built_in,
+	.hljs-builtin-name,
+	.hljs-literal,
+	.hljs-type,
+	.hljs-params {
+	  color: #b65611;
+	}
+
+	/* Atelier-Dune Green */
+	.hljs-string,
+	.hljs-symbol,
+	.hljs-bullet {
+	  color: #60ac39;
+	  font-weight: bold;
+	}
+
+	/* Atelier-Dune Blue */
+	.hljs-title,
+	.hljs-section {
+	  color: #6684e1;
+	  font-weight: bold;
+	}
+
+	/* Atelier-Dune Purple */
+	.hljs-keyword,
+	.hljs-selector-tag {
+	  color: #b854d4;
+	  font-weight: bold;
+	}
+
+	.hljs {
+	  display: block;
+	  overflow-x: auto;
+	  background: #fefbec;
+	  color: #6e6b5e;
+	  padding: 0.5em;
+	}
+
+	.hljs-emphasis {
+	  font-style: italic;
+	}
+
+	.hljs-strong {
+	  font-weight: bold;
+	}
+</style>
 </head>
 <body>
-<!-- wrapper [s] -->
-
 <div id="example">
     <span>A child element</span>
 </div>
+
+<pre>
+	<code class="javascript hljs">
+
+		$(function(){
+
+		<span class="hljs-variable">var container = $('#container'),</span>
+		<span class="hljs-variable">examWrap = container.find('.exam_wrap'),</span>
+		<span class="hljs-variable">examResult = null,</span>
+
+			changeElement = function(){
+				for(var i=0; i < examWrap.length; i++){
+					switch(i){
+						<span class="hljs-string">case 0:</span>
+							examResult = examWrap.eq(0).find('.exam_q');
+							<span class="hljs-title">drawInputElement(examResult);</span>
+							break;
+						<span class="hljs-string">case 1:</span>
+							examResult = examWrap.eq(1).find('.exam_q');
+							<span class="hljs-title">drawInputChkElement(examResult);</span>
+							break;
+						<span class="hljs-string">case 2:</span>
+							examResult = examWrap.eq(2).find('.exam_q');
+							<span class="hljs-title">drawGugudan8(examResult);</span>
+							break;
+						<span class="hljs-string">case 3:</span>
+							examResult = examWrap.eq(3).find('.exam_q');
+							<span class="hljs-title">drawGugudanAll(examResult);</span>
+							break;
+						<span class="hljs-string">default:</span>
+							alert('더이상 문제가 없습니당');
+							break;
+					}
+				}
+			},
+
+			drawInputElement = function(examResult){
+				var checkNum = 0;
+
+				while(checkNum < 5){
+					examResult.append('&lt;label&gt;' + (checkNum+1)+'. &lt;input type="text"&gt;&lt;/label&gt;&lt;br&gt;');
+					checkNum++;
+				}
+			},
+
+			drawInputChkElement = function(examResult){
+				for(var i=1; i < 6; i++){
+					if(i%2 == 0)
+						examResult.append('&lt;label&gt;' +i+ '. &lt;input type="text"&gt;&lt;/label&gt;&lt;br&gt;');
+					else if(i%2 == 1){
+						examResult.append('&lt;input type="checkbox" id="chk'+i+'"&gt;&lt;label for="chk'+i+'"&gt;' + i + '번째 Checkbox&lt;/label&gt;&lt;br&gt;');
+					}
+				}
+			},
+
+			drawGugudan8 = function(examResult){
+				for(var i=1; i < 10; i++){
+					examResult.append('8 X ' + i + ' = ' + (8*i)+'&lt;br&gt;');
+				}
+			},
+
+			drawGugudanAll = function (examResult) {
+				var output='',
+					arr = [];
+				for (var i = 2; i < 10; i++) {
+					for (var j=1; j < 10; j++) {
+						arr.push(i+'x'+j+'='+(i*j));
+					}
+				}
+				examResult.get(0).innerHTML += arr.join('&lt;br&gt;');
+			};
+
+			changeElement();
+		});
+	</code>
+</pre>
+
 <div id="wrapper">
 	<!-- header [s] -->
 	<div id="header">
