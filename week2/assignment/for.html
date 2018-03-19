@@ -6,6 +6,7 @@
 <title>exam</title>
 <link rel="stylesheet" href="common.css" />
 <script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="../../js/jquery-1.12.4.min.js" type="text/javascript"></script>
 <script>
 $(function(){
 
@@ -24,7 +25,7 @@ $(function(){
 		changeElement = function(){
 			for(var i=0; i<examWrap.length; i++){
 				switch(i){
-					case 0: 
+					case 0:
 						examResult = examWrap.eq(0).find('.exam_q');
 						drawInputElement(examResult);
 						break;
@@ -66,7 +67,7 @@ $(function(){
 		},
 
 		drawGugudan8 = function(examResult){
-			for(var i=1; i<10; i++){	
+			for(var i=1; i<10; i++){
 				examResult.append('8 X ' + i + ' = ' + (8*i)+'<br>');
 			}
 		},
