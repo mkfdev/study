@@ -11,29 +11,29 @@
 
 	$(function(){
 		var container = $('#container'),
-			examWrap1 = container.find('.exam_wrap').eq(0),
-			examWrap2 = container.find('.exam_wrap').eq(1),
-			examWrap3 = container.find('.exam_wrap').eq(2),
-			examWrap4 = container.find('.exam_wrap').eq(3),
-			button1 = examWrap1.find('button').eq(0),
-			button2 = examWrap2.find('button').eq(0),
-			button3 = examWrap3.find('button').eq(0),
-			buttonPrev4 = examWrap4.find('button').eq(0),
-			buttonNext4 = examWrap4.find('button').eq(1),
-			examqEle1 = examWrap1.find('.exam_q > ul'),
-			examqEle2 = examWrap2.find('.exam_q > ul'),
-			examqEle3 = examWrap3.find('.exam_q > ul'),
-			examqEle4 = examWrap4.find('.exam_q > ul'),
-			examLi01 = examqEle1.children(),
-			examLi02 = examqEle2.children(),
-			examLi03 = examqEle3.children(),
-			examLi04 = examqEle4.children(),
-			firstIdx = 0,
-			lastIdx = examLi02.length-1,
-			prevIdx = 0,
-			nextIdx = 1,
-			oldIdx = 0,
-			newIdx = 1,
+					examWrap1 = container.find('.exam_wrap').eq(0),
+					examWrap2 = container.find('.exam_wrap').eq(1),
+					examWrap3 = container.find('.exam_wrap').eq(2),
+					examWrap4 = container.find('.exam_wrap').eq(3),
+					button1 = examWrap1.find('button').eq(0),
+					button2 = examWrap2.find('button').eq(0),
+					button3 = examWrap3.find('button').eq(0),
+					buttonPrev4 = examWrap4.find('button').eq(0),
+					buttonNext4 = examWrap4.find('button').eq(1),
+					examqEle1 = examWrap1.find('.exam_q > ul'),
+					examqEle2 = examWrap2.find('.exam_q > ul'),
+					examqEle3 = examWrap3.find('.exam_q > ul'),
+					examqEle4 = examWrap4.find('.exam_q > ul'),
+					examLi01 = examqEle1.children(),
+					examLi02 = examqEle2.children(),
+					examLi03 = examqEle3.children(),
+					examLi04 = examqEle4.children(),
+					firstIdx = 0,
+					lastIdx = examLi02.length-1,
+					prevIdx = 0,
+					nextIdx = 1,
+					newIdx = 0,
+					oldIdx = newIdx;
 
 			qResult1 = function(){
 
@@ -43,7 +43,7 @@
 				}
 				examLi01.eq(firstIdx).css('background-color','yellow');
 				firstIdx++;
-			},
+			};
 
 			qResult2 = function(){
 				if(lastIdx < 0){
@@ -52,7 +52,7 @@
 				}
 				examLi02.eq(lastIdx).css('background-color','yellow');
 				lastIdx--;
-			},
+			};
 
 			qResult3 = function(){
 				if(nextIdx == examLi03.length){
@@ -63,40 +63,36 @@
 				examLi03.eq(nextIdx).css('background-color','yellow');
 				prevIdx = nextIdx;
 				nextIdx++;
-			},
+			};
 
 			qResultNext4 = function(){
-				if(newIdx == examLi04.length){
-					newIdx = 0;
+				if(newIdx == examLi04.length-1){
+					newIdx = -1;
 				}
-				console.log(oldIdx, newIdx);
+				newIdx++;
 
 				examLi04.eq(oldIdx).removeClass('active');
 				examLi04.eq(newIdx).addClass('active');
+
 				oldIdx = newIdx;
-				newIdx++;
-			},
+			};
 
 			qResultPrev4 = function(){
-				console.log('prev  '+oldIdx, newIdx)
-				if(oldIdx < 0){
-					oldIdx = examLi04.length-1;
-				}
-				oldIdx--;
 				newIdx--;
+				if(newIdx < 0){
+					newIdx = examLi04.length-1;
+				}
+
 				console.log(newIdx);
-				examLi04.eq(newIdx).removeClass('active');
-				examLi04.eq(oldIdx).addClass('active');
-				newIdx = oldIdx;
-				console.log('new'+newIdx)
-
-
+				examLi04.eq(oldIdx).removeClass('active');
+				examLi04.eq(newIdx).addClass('active');
+				oldIdx = newIdx;
 			};
 
 			button1.on('click', qResult1);
 			button2.on('click', qResult2);
 			button3.on('click', qResult3);
-			//buttonPrev4.on('click', qResultPrev4);
+			buttonPrev4.on('click', qResultPrev4);
 			buttonNext4.on('click', qResultNext4);
 	});
 </script>
