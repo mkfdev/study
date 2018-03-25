@@ -1,0 +1,471 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>exam</title>
+<link rel="stylesheet" href="common.css" />
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="../../js/jquery-1.12.4.min.js" type="text/javascript"></script>
+<!-- <link rel="stylesheet" href="//cdn.jsdelivr.net/highlight.js/8.7/styles/monokai_sublime.min.css"> -->
+<script src="//cdn.jsdelivr.net/highlight.js/8.7/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad();</script>
+<style>
+	/* Base16 Atelier Dune Light - Theme */
+
+	/* Atelier-Dune Comment */
+
+	.hljs-comment,
+	.hljs-quote {
+		color: #7d7a68;
+	}
+
+	/* Atelier-Dune Red */
+
+	.hljs-variable,
+	.hljs-template-variable,
+	.hljs-attribute,
+	.hljs-tag,
+	.hljs-name,
+	.hljs-regexp,
+	.hljs-link,
+	.hljs-name,
+	.hljs-selector-id,
+	.hljs-selector-class {
+		color: #d73737;
+	}
+
+	/* Atelier-Dune Orange */
+
+	.hljs-number,
+	.hljs-meta,
+	.hljs-built_in,
+	.hljs-builtin-name,
+	.hljs-literal,
+	.hljs-type,
+	.hljs-params {
+		color: #b65611;
+		font-weight: bold;
+	}
+
+	/* Atelier-Dune Green */
+
+	.hljs-string,
+	.hljs-symbol,
+	.hljs-bullet {
+		color: #60ac39;
+		font-weight: bold;
+	}
+
+	/* Atelier-Dune Blue */
+
+	.hljs-title,
+	.hljs-section {
+		color: #6684e1;
+		font-weight: bold;
+	}
+
+	/* Atelier-Dune Purple */
+
+	.hljs-keyword,
+	.hljs-selector-tag {
+		color: #b854d4;
+		font-weight: bold;
+	}
+
+	.hljs {
+		display: block;
+		overflow-x: auto;
+		background: #fefbec;
+		color: #6e6b5e;
+		padding: 0.5em;
+	}
+
+	.hljs-emphasis {
+		font-style: italic;
+	}
+
+	.hljs-strong {
+		font-weight: bold;
+	}
+</style>
+<script>
+	window.onload = function(){
+		var obj = {
+			init: function(){
+				this.setElement();
+				this.bindEvents();
+			},
+			setElement : function(){
+				this.obj = $('#container'),
+				this.wrapper = this.obj.find('.exam_wrap'),
+				this.examBtn = this.obj.find('button');
+			},
+			bindEvents : function(){
+				this.examBtn.eq(0).on('click', $.proxy(this.outputNameStr, this));
+				this.examBtn.eq(1).on('click', $.proxy(this.outputOppStr, this));
+				this.examBtn.eq(2).on('click', $.proxy(this.outputHighNumber, this));
+				this.examBtn.eq(3).on('click', $.proxy(this.outputGugudan, this));
+				this.examBtn.eq(4).on('click', $.proxy(this.outputArray, this));
+				this.examBtn.eq(5).on('click', $.proxy(this.outputRandomNumber, this));
+				this.examBtn.eq(6).on('click', $.proxy(this.outputRandomNumber2, this));
+				this.examBtn.eq(7).on('click', $.proxy(this.outputRandomNumber3, this));
+			},
+			outputNameStr : function(){
+				var spStr;
+				var myName = 'Choi Min Kyung';
+				spStr = myName.split(' ');
+				//console.log('myName의 타입: ' + typeof myName);
+				//console.log('spStr의 타입: ' + typeof spStr);
+				this.examBtn.eq(0).next('.exam_result').append(spStr.join(' '));			
+				console.log(spStr.join(' '));	
+			},
+			outputOppStr : function(){
+				var str = 'question';
+				var newStr ='';
+
+				for(i=str.length-1; i >= 0; i--){
+					newStr += str[i];
+				}
+				this.examBtn.eq(1).next('.exam_result').append(newStr);
+				console.log(newStr);
+			},
+			outputHighNumber : function(){
+				var number = [40, 100, 1, 5, 25, 10];
+				var idxArr = [];
+				var temp;
+
+				for(var i=0; i<number.length; i++){//1 2
+					for(var j=i+1; j<number.length; j++){//01
+						if(number[i] < number[j]){
+							temp = number[i];
+							number[i] = number[j];
+							number[j] = temp;
+							
+							idxArr[i] = number.indexOf(number[j]);
+						}
+					}
+				}
+				
+
+				console.log(idxArr);
+			},
+			outputGugudan : function(){
+				var arr = [];
+				//이중배열
+				for(var i=1; i<9; i++){
+					arr[i] = [];
+					for(var j=0; j<9; j++){
+						arr[i][j] = (i+1)*(j+1);
+					}
+				}
+			
+				console.log(arr);
+
+				//이중배열 HTML에 찍기 위함(이중배열 표현)
+				var res=[];
+
+				res.push('[');
+				for(var k=1; k<9; k++){
+					res.push(' [');
+					for(var l=1; l<10; l++){ 
+						res.push(' '+(k+1) * l+' ');
+					}
+					res.push('] ');
+				}
+				res.push(']');
+				this.examBtn.eq(3).next('.exam_result').append(res);
+				alert('콘솔로 이중배열 확인');
+			},
+
+			outputArray : function(){
+				var arr=[];
+
+				for(var i=0; i<10; i++){
+					arr[i] = i;
+				}
+				this.examBtn.eq(4).next('.exam_result').append(arr);
+				console.log(arr);
+			},
+
+			outputRandomNumber: function(){
+				var arr=[];
+				var random;
+				
+				for (var i=0; i<5; i++){
+					random = Math.floor(Math.random() * 6);
+					arr[i] = random;
+				}
+				this.examBtn.eq(5).next('.exam_result').append(arr);
+				console.log(arr);
+			},
+
+			outputRandomNumber2 : function(){
+				var arrRandom = [];
+
+				for(var i=0; i<10; i++){
+					arrRandom[i] = i;
+				}
+
+				random = Math.floor(Math.random() * 10);
+
+				for (j = 0; j < arrRandom.length; j++) {
+					if (arrRandom[j] == random) {
+						var idx = arrRandom.indexOf(random);
+						arrRandom.splice(idx,1);
+					}
+				}
+				console.log(arrRandom);
+				this.examBtn.eq(6).next('.exam_result').append(arrRandom);
+			},
+
+			outputRandomNumber3 : function(){
+				var arr=[];
+				var random = Math.floor(Math.random() * 6);
+
+				for(var i=0; i<6; i++){
+					arr[i] = Math.floor(Math.random() * 6);;
+
+
+					//중복 제거
+					for(j=0; j<i; j++){
+						if(arr[i] == arr[j]){
+							i--;
+						}
+					}
+				}
+				
+				console.log(arr);
+				this.examBtn.eq(7).next('.exam_result').append(arr);
+			}
+
+		}
+		obj.init();
+	}
+</script>
+</head>
+<body>
+	<pre>
+		<code class="javascript hljs">
+			<div class="hljs-params">
+			window.onload = function(){
+			var obj = {
+				init: function(){
+					this.setElement();
+					this.bindEvents();
+				},
+				setElement : function(){
+					this.obj = $('#container'),
+					this.wrapper = this.obj.find('.exam_wrap'),
+					this.examBtn = this.obj.find('button');
+				},
+				bindEvents : function(){
+					this.examBtn.eq(0).on('click', $.proxy(this.outputNameStr, this));
+					this.examBtn.eq(1).on('click', $.proxy(this.outputOppStr, this));
+					this.examBtn.eq(2).on('click', $.proxy(this.outputHighNumber, this));
+					this.examBtn.eq(3).on('click', $.proxy(this.outputGugudan, this));
+					this.examBtn.eq(4).on('click', $.proxy(this.outputArray, this));
+					this.examBtn.eq(5).on('click', $.proxy(this.outputRandomNumber, this));
+					this.examBtn.eq(6).on('click', $.proxy(this.outputRandomNumber2, this));
+					this.examBtn.eq(7).on('click', $.proxy(this.outputRandomNumber3, this));
+				},
+				outputNameStr : function(){
+					var spStr;
+					var myName = 'Choi Min Kyung';
+					spStr = myName.split(' ');
+					//console.log('myName의 타입: ' + typeof myName);
+					//console.log('spStr의 타입: ' + typeof spStr);
+					this.examBtn.eq(0).next('.exam_result').append(spStr.join(' '));			
+					console.log(spStr.join(' '));	
+				},
+				outputOppStr : function(){
+					var str = 'question';
+					var newStr ='';
+
+					for(i=str.length-1; i >= 0; i--){
+						newStr += str[i];
+					}
+					this.examBtn.eq(1).next('.exam_result').append(newStr);
+					console.log(newStr);
+				},
+				outputHighNumber : function(){
+					var number = [40, 100, 1, 5, 25, 10];
+					var idxArr = [];
+					var temp;
+
+					for(var i=0; i< number.length; i++){//1 2
+						for(var j=i+1; j< number.length; j++){//01
+							if(number[i] < number[j]){
+								temp = number[i];
+								number[i] = number[j];
+								number[j] = temp;
+								
+								idxArr[i] = number.indexOf(number[j]);
+							}
+						}
+					}
+					console.log(idxArr);
+				},
+				outputGugudan : function(){
+					var arr = [];
+					//이중배열
+					for(var i=1; i<9; i++){
+						arr[i] = [];
+						for(var j=0; j<9; j++){
+							arr[i][j] = (i+1)*(j+1);
+						}
+					}
+				
+					console.log(arr);
+
+					//이중배열 HTML에 찍기 위함(이중배열 표현)
+					var res=[];
+
+					res.push('[');
+					for(var k=1; k<9; k++){
+						res.push(' [');
+						for(var l=1; l<10; l++){ 
+							res.push(' '+(k+1) * l+' ');
+						}
+						res.push('] ');
+					}
+					res.push(']');
+					this.examBtn.eq(3).next('.exam_result').append(res);
+					alert('콘솔로 이중배열 확인');
+				},
+
+				outputArray : function(){
+					var arr=[];
+
+					for(var i=0; i<10; i++){
+						arr[i] = i;
+					}
+					this.examBtn.eq(4).next('.exam_result').append(arr);
+					console.log(arr);
+				},
+
+				outputRandomNumber: function(){
+					var arr=[];
+					var random;
+					
+					for (var i=0; i<5; i++){
+						random = Math.floor(Math.random() * 6);
+						arr[i] = random;
+					}
+					this.examBtn.eq(5).next('.exam_result').append(arr);
+					console.log(arr);
+				},
+
+				outputRandomNumber2 : function(){
+					var arrRandom = [];
+
+					for(var i=0; i<10; i++){
+						arrRandom[i] = i;
+					}
+
+					random = Math.floor(Math.random() * 10);
+
+					for (j = 0; j < arrRandom.length; j++) {
+						if (arrRandom[j] == random) {
+							var idx = arrRandom.indexOf(random);
+							arrRandom.splice(idx,1);
+						}
+					}
+					console.log(arrRandom);
+					this.examBtn.eq(6).next('.exam_result').append(arrRandom);
+				},
+
+				outputRandomNumber3 : function(){
+					var arr=[];
+					var random = Math.floor(Math.random() * 6);
+
+					for(var i=0; i<6; i++){
+						arr[i] = Math.floor(Math.random() * 6);;
+
+
+						//중복 제거
+						for(j=0; j< i; j++){
+							if(arr[i] == arr[j]){
+								i--;
+							}
+						}
+					}
+					
+					console.log(arr);
+					this.examBtn.eq(7).next('.exam_result').append(arr);
+				}
+
+			}
+			obj.init();
+		}
+		</div>
+		</code>
+	</pre>
+<!-- wrapper [s] -->
+<div id="wrapper">
+	<!-- header [s] -->
+	<div id="header">
+	</div>
+	<!-- header [e] -->
+	<hr />
+	<!-- container [s] -->
+	<div id="container">
+		<div class="exam_wrap">
+			<h1>Q. 배열에 본인 이름을 한글자씩 담은 다음 문자열로 출력하세요.</h1>
+			<div class="exam_q">예시) ['Lee', 'Hwan'] => 'Lee Hwan'</div>
+			<button type="button">버튼</button>
+			<div class="exam_result"></div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. 'question' 문자열을 거꾸로 출력하세요. (for문 사용)</h1>
+			<div class="exam_q">예시) 'question' => 'noitseuq'</div>
+			<button type="button">버튼</button>
+			<div class="exam_result"></div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. [40, 100, 1, 5, 25, 10] 에서 가장 큰 수 순서대로 index 를 배열로 출력하세요.  (for/if문 사용)</h1>
+			<div class="exam_q">예시) [40, 100, 1, 5, 25, 10] => [1, 0, 5, 4, 2, 3]</div>
+			<button type="button">버튼</button>
+			<div class="exam_result"></div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. 2중 배열로 구구단을 만드세요. (for문 사용)</h1>
+			<div class="exam_q">예시) [[2,4,6...],[3,6,9...]...]</div>
+			<button type="button">버튼</button>
+			<div class="exam_result"></div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. 배열에 숫자 0 ~ 9까지 담아보세요. (for문 사용)</h1>
+			<div class="exam_q">예시) [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]</div>
+			<button type="button">버튼</button>
+			<div class="exam_result"></div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. 배열에 숫자 0 ~ 5 사이의 랜덤한 숫자를 6개 담아보세요. (for문 사용)</h1>
+			<div class="exam_q">예시) [4, 2, 3, 2, 3, 0]</div>
+			<button type="button">버튼</button>
+			<div class="exam_result"></div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. 배열에 숫자 0 ~ 9까지 담고, 버튼 클릭시 랜덤한 숫자를 하나씩 빼주세요.</h1>
+			<div class="exam_q">예시) [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] => [0, 1, 2, 3, 4, 5, 7, 8, 9] => [0, 1, 3, 4, 5, 7, 8, 9]</div>
+			<button type="button">버튼</button>
+			<div class="exam_result"></div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. 배열에 숫자 0 ~ 5 사이의 랜덤한 숫자를 중복되는 값이 없도록 6개 담아보세요. (for/if문 사용)</h1>
+			<div class="exam_q">예시) [4, 2, 3, 1, 5, 0]</div>
+			<button type="button">버튼</button>
+			<div class="exam_result"></div>
+		</div>
+	</div>
+	<!-- container [e] -->
+	<hr />
+	<!-- footer [s] -->
+	<div id="footer">
+	</div>
+	<!-- footer [e] -->
+</div>
+<!-- wrapper [e] -->
+</body>
+</html>

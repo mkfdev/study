@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>exam</title>
+<link rel="stylesheet" href="common.css" />
+<script src="http://code.jquery.com/jquery-latest.js"></script>
+<script src="../../js/jquery-1.12.4.min.js" type="text/javascript"></script>
+<style>
+	strong {background-color: yellow;}
+	pre {background-color: #000; font-weight:bold; color:#fff;}
+</style>
+<script>
+
+	window.onload = function(){
+		// var obj = {
+		// 	e: 'e',
+		// 	d: 'd',
+		// 	b: 'b',
+		// 	g: 'g',
+		// 	c: 'c',
+		// 	f: 'f',
+		// 	a: 'a'
+		// };
+		// var arr = [];
+		// for (var key in obj){
+		// 	arr.push(key);
+		// }
+		// arr.sort();
+		// var res = arr.join('');
+		// console.log(res);
+
+var num = 33;
+		var obj = {
+			num1 : 1,
+			init: function () {
+				console.log(this);
+			}
+		};
+		obj.init();
+	}
+</script>
+</head>
+<body>
+<!-- wrapper [s] -->
+<div id="wrapper">
+	<!-- header [s] -->
+	<div id="header">
+	</div>
+	<!-- header [e] -->
+	<hr />
+	<!-- container [s] -->
+	<div id="container">
+		<div class="exam_wrap">
+			<h1>Q. 함수 호출시 new 를 붙인 것과 안 붙인 것의 차이를 설명하세요.</h1>
+			<div class="exam_q">예시)<br>
+			var obj = function () {<br>
+			&nbsp;&nbsp;&nbsp;console.log(this);<br>
+			};<br>
+			obj();<br>
+			// new obj();
+			</div>
+			<div>
+				<strong>함수 호출 방식에 따라 this 바인딩이 다르게 된다. (READMD에 자세한 예제 정리)</strong><br>
+				<strong>obj() 함수로 호출했을 경우, this는 전역객체(window)에 바인딩 된다.</strong><br>
+				<strong>new Obj() new를 사용해서 함수를 호출할 경우, 인스턴스를 만들어서 사용하는 함수가 되어서 호출 함수가 생성자가 되고, 생성자 함수에 this가 바인딩 된다.</strong><br>
+			</div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. 객체 내에서의 this 를 설명하세요.</h1>
+			<div class="exam_q">예시)<br>
+			var obj = {<br>
+			&nbsp;&nbsp;&nbsp;init : function () {<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log(this);<br>
+			&nbsp;&nbsp;&nbsp;}<br>
+			};<br>
+			obj.init();<br>
+			</div>
+			<div>
+				<strong>함수가 객체의 속성(멤버함수)로 저장되어 있다.(메서드 호출 방식) (README에 자세한 예제 정리)</strong><br>
+				<strong>위 예제는 객체 내에서 this는 obj객에체 바인딩된다.</strong><br>
+				<strong>console.log(this); // obj</strong><br>
+			</div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. 객체 내의 다른 메서드를 호출해보세요.</h1>
+			<div class="exam_q">예시)<br>
+			var obj = {<br>
+			&nbsp;&nbsp;&nbsp;init : function () {<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// setElements 함수를 호출해봐요~<br>
+			<strong>this.setElements();</strong>
+			&nbsp;&nbsp;&nbsp;},<br>
+			&nbsp;&nbsp;&nbsp;setElements : function () {<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log('call');<br>
+			&nbsp;&nbsp;&nbsp;}<br>
+			};<br>
+			obj.init();<br>
+			</div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. 객체 내에서 다른 객체의 메서드를 호출해보세요.</h1>
+			<div class="exam_q">예시)<br>
+			var obj = {<br>
+			&nbsp;&nbsp;&nbsp;init : function () {<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// 객체 obj2 의 init 을 호출해봐요~<br>
+			&nbsp;&nbsp;&nbsp;}<br>
+			};<br>
+			var obj2 = {<br>
+			&nbsp;&nbsp;&nbsp;init : function () {<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log('call');<br>
+			&nbsp;&nbsp;&nbsp;}<br>
+			};<br>
+			obj.init();<br>
+			<strong>obj2.init();</strong>
+			</div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. 데이터 타입들을 모두 넣은후, 값들을 출력해보세요.</h1>
+			<div class="exam_q">예시)<br>
+			var obj = {<br>
+			&nbsp;&nbsp;&nbsp;func : function () {<br>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;console.log('func');<br>
+			&nbsp;&nbsp;&nbsp;},<br>
+			&nbsp;&nbsp;&nbsp;num : 3,<br>
+			<strong>name: 'ChoiMinKyung',</strong><br>
+			<strong>arr : ['age', 'name', 'tel'],</strong><br>
+			<strong>checkEvent : function(){ alert('function test');}</strong><br>			
+			};<br>
+			console.log(obj.func);<br>
+			console.log(obj.num);<br>
+			<strong>console.log(obj.name);</strong><br>
+			<strong>console.log(obj.arr);</strong><br>
+			<strong>console.log(obj.checkEvent);</strong><br>
+			</div>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. 객체내의 모든 속성들의 값을 배열에 저장한후, abc 순으로 sorting 하여, 'abcdefg' 문자열로 출력해보세요.</h1>
+			<div class="exam_q">예시)<br>
+			var obj = {<br>
+			&nbsp;&nbsp;&nbsp;e : 'e',<br>
+			&nbsp;&nbsp;&nbsp;d : 'd',<br>
+			&nbsp;&nbsp;&nbsp;b : 'b',<br>
+			&nbsp;&nbsp;&nbsp;g : 'g',<br>
+			&nbsp;&nbsp;&nbsp;c : 'c',<br>
+			&nbsp;&nbsp;&nbsp;f : 'f',<br>
+			&nbsp;&nbsp;&nbsp;a : 'a'<br>
+			};<br>
+			</div>
+	<pre><code>
+	var obj = {
+		e: 'e',
+		d: 'd',
+		b: 'b',
+		g: 'g',
+		c: 'c',
+		f: 'f',
+		a: 'a'
+	};
+	var arr = [];
+	for (var key in obj){
+		arr.push(key);
+	}
+	arr.sort();
+	var res = arr.join('');
+	console.log(res);
+	</code></pre>
+		</div>
+		<div class="exam_wrap">
+			<h1>Q. 'bcaebe' 문자열을 hasOwnProperty 를 사용해서, {a : 1, b : 2, c : 1, e : 2} 로 변경해보세요.</h1>
+		</div>
+	</div>
+	<!-- container [e] -->
+	<hr />
+	<!-- footer [s] -->
+	<div id="footer">
+	</div>
+	<!-- footer [e] -->
+</div>
+<!-- wrapper [e] -->
+</body>
+</html>
