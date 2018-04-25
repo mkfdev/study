@@ -254,6 +254,7 @@
 			};<br>
 			</div>
 	<pre><code>
+
 	var obj = {
 		e: 'e',
 		d: 'd',
@@ -270,11 +271,52 @@
 	arr.sort();
 	var res = arr.join('');
 	console.log(res);
+
+	-----------------------------------------------
+
+	var exam1 = {
+		obj: ['e','d','b','g','c','f','a'],
+
+		init: function(){
+			this.bindEvent();
+		},
+
+		bindEvent: function(){
+			console.log(this.obj.sort().join(''));
+		}
+	}
+
+	exam1.init();
 	</code></pre>
 		</div>
 		<div class="exam_wrap">
 			<h1>Q. 'bcaebe' 문자열을 hasOwnProperty 를 사용해서, {a : 1, b : 2, c : 1, e : 2} 로 변경해보세요.</h1>
 		</div>
+	<pre><code>
+	var exam2 = {
+		str: 'bcaebe',
+
+		init: function(){
+			this.obj = {},
+			this.objStr = this.str.split('').sort();
+			console.log(this.objStr);
+			this.bindEvent();
+		},
+
+		bindEvent: function(){
+			for(var i=0; i < this.objStr.length; i++){
+				if(this.obj.hasOwnProperty(this.objStr[i])){			
+					this.obj[this.objStr[i]] = this.obj[this.objStr[i]] + 1;
+				}else{
+					this.obj[this.objStr[i]] = 1;
+				}
+			}
+			console.log(this.obj);
+		}
+	}
+
+	exam2.init();
+	</code></pre>
 	</div>
 	<!-- container [e] -->
 	<hr />
