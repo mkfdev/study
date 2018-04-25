@@ -14,22 +14,23 @@
 <script>
 
 	$(function(){
-		var obj1 = {
-			e: 'e',
-			d: 'd',
-			b: 'b',
-			g: 'g',
-			c: 'c',
-			f: 'f',
-			a: 'a'
-		};
-		var arr = [];
-		for (var key in obj1){
-			arr.push(key);
-		}
-		arr.sort();
-		var res = arr.join('');
-		console.log(res);
+		//내 소스
+		// var obj1 = {
+		// 	e: 'e',
+		// 	d: 'd',
+		// 	b: 'b',
+		// 	g: 'g',
+		// 	c: 'c',
+		// 	f: 'f',
+		// 	a: 'a'
+		// };
+		// var arr = [];
+		// for (var key in obj1){
+		// 	arr.push(key);
+		// }
+		// arr.sort();
+		// var res = arr.join('');
+		// console.log(res);
 
 		// var num = 33;
 		// var obj = {
@@ -39,47 +40,86 @@
 		// 	}
 		// };
 		// obj.init();
-	})
+		var exam1 = {
+			obj: ['e','d','b','g','c','f','a'],
 
-	
-	window.onload = function(){
+			init: function(){
+				this.bindEvent();
+			},
+
+			bindEvent: function(){
+				console.log(this.obj.sort().join(''));
+			}
+		}
 
 
 		//bcaebe -> {a : 1, b : 2, c : 1, e : 2}
+		var exam2 = {
+			str: 'bcaebe',
 
-		var obj_str = {
-			str: 'bcaebe'
-		};
+			init: function(){
+				this.obj = {},
+				this.objStr = this.str.split('').sort();
+				console.log(this.objStr);
+				this.bindEvent();
+			},
 
-		for(var s in obj_str){
-			var arr=[];
-			//Object.prototype.hasOwnProperty.call(obj_str, s)
-			//obj_str.hasOwnProperty(s)
-			if(Object.prototype.hasOwnProperty.call(obj_str, s)){
-				
-				arr = obj_str[s].split('');
-				console.log(arr);
-
-				var cnt = 0;
-
-				for(var i=0; i<arr.length; i++){
-
-					for(var j=i+1; j<arr.length; j++){
-						if(arr[i] == arr[j]) {
-							cnt++;
-							var key_name = '' +arr[i];
-							var obj_new = new Object();
-							obj_new.a = cnt;
-						}
+			bindEvent: function(){
+				for(var i=0; i<this.objStr.length; i++){
+					if(this.obj.hasOwnProperty(this.objStr[i])){
+						//console.log('objStr =>' + this.obj[this.objStr[i]]);
+						this.obj[this.objStr[i]] = this.obj[this.objStr[i]] + 1;
+						//console.log(i + ' :' + this.obj[this.objStr[i]]);
+					}else{
+						this.obj[this.objStr[i]] = 1;
 					}
 				}
-				
-
-			}else{
-				console.log('nothas');
+				console.log(this.obj);
 			}
 		}
-	}
+		exam1.init();
+		exam2.init();
+	});
+
+	
+	// window.onload = function(){
+
+
+	// 	//bcaebe -> {a : 1, b : 2, c : 1, e : 2}
+
+	// 	var obj_str = {
+	// 		str: 'bcaebe'
+	// 	};
+
+	// 	for(var s in obj_str){
+	// 		var arr=[];
+	// 		//Object.prototype.hasOwnProperty.call(obj_str, s)
+	// 		//obj_str.hasOwnProperty(s)
+	// 		if(Object.prototype.hasOwnProperty.call(obj_str, s)){
+				
+	// 			arr = obj_str[s].split('');
+	// 			console.log(arr);
+
+	// 			var cnt = 0;
+
+	// 			for(var i=0; i<arr.length; i++){
+
+	// 				for(var j=i+1; j<arr.length; j++){
+	// 					if(arr[i] == arr[j]) {
+	// 						cnt++;
+	// 						var key_name = '' +arr[i];
+	// 						var obj_new = new Object();
+	// 						obj_new.a = cnt;
+	// 					}
+	// 				}
+	// 			}
+				
+
+	// 		}else{
+	// 			console.log('nothas');
+	// 		}
+	// 	}
+	// }
 	
 </script>
 </head>
