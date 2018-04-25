@@ -13,33 +13,74 @@
 </style>
 <script>
 
-	window.onload = function(){
-		// var obj = {
-		// 	e: 'e',
-		// 	d: 'd',
-		// 	b: 'b',
-		// 	g: 'g',
-		// 	c: 'c',
-		// 	f: 'f',
-		// 	a: 'a'
-		// };
-		// var arr = [];
-		// for (var key in obj){
-		// 	arr.push(key);
-		// }
-		// arr.sort();
-		// var res = arr.join('');
-		// console.log(res);
+	$(function(){
+		var obj1 = {
+			e: 'e',
+			d: 'd',
+			b: 'b',
+			g: 'g',
+			c: 'c',
+			f: 'f',
+			a: 'a'
+		};
+		var arr = [];
+		for (var key in obj){
+			arr.push(key);
+		}
+		arr.sort();
+		var res = arr.join('');
+		console.log(res);
 
-var num = 33;
+		var num = 33;
 		var obj = {
 			num1 : 1,
 			init: function () {
 				console.log(this);
 			}
 		};
-		obj.init();
+		obj1.init();
+	})
+
+	
+	window.onload = function(){
+
+
+		//bcaebe -> {a : 1, b : 2, c : 1, e : 2}
+
+		var obj_str = {
+			str: 'bcaebe'
+		};
+
+		for(var s in obj_str){
+			var arr=[];
+			//Object.prototype.hasOwnProperty.call(obj_str, s)
+			//obj_str.hasOwnProperty(s)
+			if(Object.prototype.hasOwnProperty.call(obj_str, s)){
+				
+				arr = obj_str[s].split('');
+				console.log(arr);
+
+				var cnt = 0;
+
+				for(var i=0; i<arr.length; i++){
+
+					for(var j=i+1; j<arr.length; j++){
+						if(arr[i] == arr[j]) {
+							cnt++;
+							var key_name = '' +arr[i];
+							var obj_new = new Object();
+							obj_new.a = cnt;
+						}
+					}
+				}
+				
+
+			}else{
+				console.log('nothas');
+			}
+		}
 	}
+	
 </script>
 </head>
 <body>
@@ -62,9 +103,25 @@ var num = 33;
 			// new obj();
 			</div>
 			<div>
-				<strong>함수 호출 방식에 따라 this 바인딩이 다르게 된다. (READMD에 자세한 예제 정리)</strong><br>
-				<strong>obj() 함수로 호출했을 경우, this는 전역객체(window)에 바인딩 된다.</strong><br>
-				<strong>new Obj() new를 사용해서 함수를 호출할 경우, 인스턴스를 만들어서 사용하는 함수가 되어서 호출 함수가 생성자가 되고, 생성자 함수에 this가 바인딩 된다.</strong><br>
+				<strong> ## 함수 호출시 new 를 붙인 것과 안 붙인 것의 차이 </strong>
+				<p>
+					함수 호출시 기존 함수에 new 연산자를 붙여서 호출하면 <strong>생성자 함수</strong>로 동작합니다.<br>
+					생성자 함수 호출 동작 방식은..<br>
+					<strong> 1) 빈 객체 생성 및 this 바인딩 </strong> <br>
+					- 생성자 함수가 실행되기 전, 빈 객체가 생성됩니다. <br>
+					- 그리고 생성자 함수 내에서 사용되는 this는 이 빈 객체를 가리킨다.</br>
+					<strong> 2) this를 통한 프로퍼티를 생성 </strong> <br>
+					<strong> 3) 생성된 객체 반환 </strong> <br>
+				</p>
+				<div>
+					<img src="imgs/console.png" alt="함수 호출(NEW를 붙인 것과 안 붙인 것)">
+					<p>[출처] http://poiemaweb.com/js-this</p>
+				</div>
+
+				<strong>결론: *this의 바인딩이 다르게 됩니다.</strong>
+				<strong>obj() 함수로 호출했을 경우, this는 전역객체(window)에 바인딩 되고,</strong><br>
+				<strong>new Obj() new를 붙여서 함수를 호출할 경우, 객체 인스턴스를 생성하는 생성자 함수로 동작하고 생성자 함수가 암묵적으로 생성한 빈객체에(new obj()가 실행되기 전에) this가 바인딩 됩니다.</strong><br>
+
 			</div>
 		</div>
 		<div class="exam_wrap">
@@ -78,9 +135,18 @@ var num = 33;
 			obj.init();<br>
 			</div>
 			<div>
-				<strong>함수가 객체의 속성(멤버함수)로 저장되어 있다.(메서드 호출 방식) (README에 자세한 예제 정리)</strong><br>
-				<strong>위 예시의 this는 obj객체에 바인딩된다.</strong><br>
-				<strong>console.log(this); // obj</strong><br>
+				<p>
+					함수가 객체의 프로퍼티이면 메소드 호출 패턴으로 호출됩니다.<br>
+					객체 내의 함수를 메소드라고 하고, <br>
+					<strong>이 메소드 내부의 this는 해당 메소드를 호출한 객체에 바인딩됩니다.</strong>
+					<strong>예시에서 this는 init함수를 호출한 obj객체에 바인딩되므로, console.log(this);의 결과는 obj가 됩니다.</strong>
+				</p>
+
+				<div>
+					<div>++ 참고) 프로토타입 객체 내부의 메소드에서 사용된 this도 해당 메소드를 호출한 객체에 바인딩 됩니다.</div>
+					<img src="imgs/console2.png" alt="프로토타입 객체의 this">
+					<div>[출처] http://poiemaweb.com/js-this</div>
+				</div>
 			</div>
 		</div>
 		<div class="exam_wrap">
