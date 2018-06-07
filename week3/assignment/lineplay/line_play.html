@@ -138,25 +138,7 @@
                     this.slideArr.splice(this.randomNum, 1);
                     console.log(this.slideArr);
                     console.log('delete');
-
-                    //마지막 캐릭터 다음루프 첫번째 캐릭터 중복 방지(아직)
-                    if(this.slideArr.length == 1){
-                        this.lastItem = this.slideArr[0];
-                       // console.log('요소 ='+this.lastItem);
-                    }
-                }
-
-                //delete로 할때
-                //undefined된 배열 체크하는 것 문제
-                // this.randomNum = Math.floor(Math.random() * this.slideArr.length);
-                // this.slideItem.hide();
-                // this.lastRandNumber = this.randomNum;    
-                // this.slideArr[this.randomNum].show();
-
-                // console.log(this.randomNum);
-                // delete this.slideArr[this.randomNum];
-                // console.log(this.slideArr);
-                // console.log('delete');          
+                }   
             }
         }
 
