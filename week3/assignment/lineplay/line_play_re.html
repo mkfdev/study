@@ -85,7 +85,7 @@
                 <span class="avatar_box">
                     <img src="img/avatar_12.jpg" alt="avatar image" class="img_avatar">
                 </span>
-            <!-- </li> -->
+            </li>
         </ul>
     </div>
     <button type="button" class="btn_random"><span>다른 아바타 보기</span></button>
@@ -98,59 +98,51 @@
         var obj = {
             init : function(){
                 this.setElement();
-                this.resetIndex();
+                this.initSlide();
                 this.bindEvents();
             },
             setElement : function(){
-                this.obj = $('.swiper-container'),
-                this.slideItem = this.obj.find('>ul li'),
-                this.slideArr = [],
-                this.slideBtn = $('.btn_random'),
-                this.randomNum,
-                this.currentItem,
-                this.prevItem,
-                this.lastRandNumber = -1,
-                this.lastItem;
+                this.container = $('.create_wrap'),
+                this.slideLi = this.container.find('ul > li'),
+                this.slideBtn = this.container.find('button'),
+                this.slideArray = [];
             },
-            resetIndex : function(){
-                this.idxArr = [];
-                for(var i=0; i<this.slideItem.length; i++){
-                    this.idxArr.push(i);
+            initSlide : function(){
+                for(var i=0; i<this.slideLi.length; i++){
+                    this.slideArray.push(this.slideLi.eq(i));
                 }
-                console.log(this.idxArr);
-                // idxArr = [0,1,2,3,4,5,6,7,8,9]
             },
-            deleteIndex : function(idx){
-                this.idxArr.splice(idx, 1);
-                console.log(this.idxArr);
-                if(this.idxArr.length) console.log('array exist');
+            reInitSlide : function(){
+                this.initSlide();
+                this.random = Math.floor(Math.random()*this.slideArray.length);
+                this.chkCompare();
+            },
+            chkCompare : function(){
+                if(this.prevItem == this.slideArray[this.random]){
+                    this.reInitSlide();
+                }else {
+                    this.initSlide();
+                    this.slideStart();
+                }
             },
             bindEvents : function(){
-                this.slideBtn.on('click', $.proxy(this.viewItem, this));
+                this.slideBtn.on('click', $.proxy(this.slideSelectOne, this));
             },
-            viewItem : function(){
-                if(this.idxArr.length == 0){
-                    //index 배열 다시 채우기
-                    this.resetIndex();
-                }
+            slideSelectOne : function(){
 
-                var random = Math.floor(Math.random() * this.idxArr.length);
-                this.currentItem = this.idxArr[random];
-
-
-                console.log("count"+ this.idxArr.length)
-                console.log("count"+ this.slideItem.length)
-
-                console.log(this.currentItem);
-                if(this.idxArr.length == this.slideItem.length){
-                    if(random == this.prevItem){
-                        this.resetIndex();
-                    }                 
-                }
-                this.slideItem.eq(this.currentItem).show().siblings().hide();
-                this.deleteIndex(random);
-                console.log(this.idxArr);
-                this.prevItem = this.currentItem;
+                if(!this.slideArray.length){
+                    //마지막 이미지와 처음에 선택될 이미지 중복 체크
+                    this.chkCompare();
+                }else{
+                    this.random = Math.floor(Math.random()*this.slideArray.length);                    
+                    this.slideStart();
+                } 
+            },
+            slideStart : function(){
+                this.slideLi.hide();
+                this.prevItem = this.slideArray[this.random];
+                this.slideArray[this.random].show();
+                this.slideArray.splice(this.random, 1);
             }
         }
 
