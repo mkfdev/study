@@ -75,17 +75,17 @@
                 this.startBtn.on('click', $.proxy(this.confirmSelect, this));
             },
             bearSelectGet : function(e){
-                e.preventDefault();
                 this.noCheckedBear = false;
                 this.selectOne = $(e.currentTarget).closest('li').index();
             },
-            confirmSelect : function(){
-                if(this.noCheckedBear) alert("곰을 선택해주세요");
+            confirmSelect : function(e){
+                e.preventDefault();
+                if(this.noCheckedBear) alert("곰을 선택해주세요!!");
                 else this.readyGame();
             },
             readyGame : function(){
                 if(this.checkedBear){
-                    alert("이미 참여했습니다");
+                    alert("이미 참여했습니다!!");
                 }else{
                     this.startGameType();
                 }
