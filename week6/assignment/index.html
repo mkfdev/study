@@ -90,7 +90,7 @@ button::-moz-focus-inner{padding:0;border:0}
                 <div class="cast_btn">
                     <button type="button" class="btn_prev">이전</button><button type="button" class="btn_next">다음</button>
                 </div>
-                <div class="cast_num"><span class="current">1</span> / <span class="total">8</span></div>
+                <div class="cast_num"><span class="current">1</span> / <span class="total"></span></div>
             </div>
         </div>
 
@@ -139,22 +139,48 @@ button::-moz-focus-inner{padding:0;border:0}
                 this.bindEvents();
             },
             setElement : function(){
-                this.wrap = $('.js-tab-wrap');
-                this.tabArea = this.wrap.find('.cast_tab');
-                this.tabs = this.tabArea.find('>ul').children();
-                this.tabContArea = this.wrap.find('.cast_cont');
-                this.tabContents = this.tabContArea.children();           
+                this.wrap = $('.js-tab-wrap'),
+                this.tabArea = this.wrap.find('.cast_tab'),
+                this.tabs = this.tabArea.find('>ul').children(),
+                this.tabContArea = this.wrap.find('.cast_cont'),
+                this.tabContents = this.tabContArea.children(),
+                this.countBtnWrap = $('.cast_num'),
+                this.totalCount = this.countBtnWrap.find('.total'),
+                this.currentCount = this.countBtnWrap.find('.current'),
+                this.moveBtnArea = $('.cast_btn'),
+                this.movePrevBtn = this.moveBtnArea.find('.btn_prev'),
+                this.moveNextBtn = this.moveBtnArea.find('.btn_next');
             },
             initOpts : function(){
                 this.currentIndex = 0;
                 this.oldIndex = this.currentIndex;
-                //totalnum여기서
+                //total
+                var total = this.tabs.length;
+                this.totalCount.text(total);
             },
             bindEvents : function(){
+                $(win).on('hashchange', $.proxy(this.hashClickFunc, this));
                 this.tabs.on('click','>a',$.proxy(this.tabClickFunc, this));
+                this.movePrevBtn.on('click',$.proxy(this.tabPrevClickFunc, this));
+                this.moveNextBtn.on('click',$.proxy(this.tabNextClickFunc, this));
+            },
+            hashClickFunc : function(){
+                var getHash = window.location.href;
+                console.log(getHash);
+                //var hash = getHash.substring(getHash.indexOf('#'));
+                //console.log(hash);
+
+                for(var i=0; i<this.tabContents.length; i++){
+                    var hash = this.tabContents.eq(i).attr('id');
+                    if(hash == window.location.hash) this.currentIndex == i;
+                }
+
+                this.viewContFunc();
+                //var hash = this.tabContents.eq(this.currentIndex).attr('id');
+                //window.location.hash = hash;
             },
             tabClickFunc : function(e){
-                e.preventDefault();
+                //e.preventDefault();
                 
                 this.targetIdx = $(e.delegateTarget);
                 //console.log(this.targetIdx);
@@ -170,11 +196,94 @@ button::-moz-focus-inner{padding:0;border:0}
                 this.tabContents.eq(this.currentIndex).addClass('active');
 
                 this.oldIndex = this.currentIndex;
+                this.currentCount.text(this.currentIndex + 1);
                 //console.log(this.oldIndex);
+            },
+            tabPrevClickFunc : function(){
+                this.currentIndex--;
+                if(this.currentIndex < 0) this.currentIndex = this.tabs.length - 1;
+                this.viewContFunc();                
+            },
+            tabNextClickFunc: function(){
+                this.currentIndex++;
+                if(this.currentIndex == this.tabs.length) this.currentIndex = 0;
+                this.viewContFunc();
             }
         };
 
         tabList.init();
+
+        var slideList = {
+            init : function(){
+                this.setElements();
+                this.initOpts();
+                this.bindEvents();
+            },
+            setElements : function(){
+                this.obj = $('.js-slide-wrap'),
+                this.slideTab = this.obj.find('.slide_tab'),
+                this.slideTabLi = this.slideTab.find('>ul').children(),
+                this.slideCont = this.obj.find('.slide_cont'),
+                this.slideContLi = this.slideCont.children(),
+                this.slideBtnArea = this.obj.find('.slide_btn'),
+                this.slidePrevBtn = this.slideBtnArea.find('.btn_prev'),
+                this.slideNextBtn = this.slideBtnArea.find('.btn_next'),
+                this.slideWidth = this.slideCont.find('.slide_article').width();
+            },
+            initOpts : function(){
+                this.currentIndex = 0;
+                this.oldIndex = this.currentIndex;
+                this.playType = '0';
+            },
+            bindEvents : function(){
+                this.slidePrevBtn.on('click', $.proxy(this.slidePrevFunc, this));
+                this.slideNextBtn.on('click', $.proxy(this.slideNextFunc, this));
+            },
+            typeChkFunc : function(){
+                switch(this.playType){
+                    case 0 :
+                        this.slideClickFun();
+                        break;
+                    case 1 : 
+                        this.fadeClickFunc();
+                        break;
+                    default :
+                        alert('Type 선택을 해주세요!');
+                        break;
+
+                }
+            },
+            slidePrevFunc : function(e){
+                this.currentIndex--;
+                if(this.currentIndex < 0) this.currentIndex = this.slideContLi.length - 1;
+
+                this.slidePrevClickFunc();
+            },
+            slideNextFunc : function(){
+                this.currentIndex++;
+                if (this.currentIndex >= this.slideContLi.length ) this.currentIndex = 0;
+
+                this.slideNextClickFunc();
+            },
+            slidePrevClickFunc : function(){
+                this.slideTabLi.eq(this.oldIndex).removeClass('active');
+                this.slideTabLi.eq(this.currentIndex).addClass('active');
+                this.slideContLi.eq(this.oldIndex).animate({'left' : -this.slideWidth });
+                this.slideContLi.eq(this.currentIndex).animate({'left': 0});
+
+                this.oldIndex = this.currentIndex;
+            },
+            slideNextClickFunc : function(){
+                 this.slideTabLi.eq(this.oldIndex).removeClass('active');
+                this.slideTabLi.eq(this.currentIndex).addClass('active');
+                this.slideContLi.eq(this.oldIndex).animate({ 'right': -this.slideWidth });
+                this.slideContLi.eq(this.currentIndex).animate({ 'left': 0 });
+
+                this.oldIndex = this.currentIndex;
+            }
+        };
+        
+        slideList.init();
 
 
     })(window, window.jQuery);
