@@ -159,7 +159,7 @@ button::-moz-focus-inner{padding:0;border:0}
                 this.totalCount.text(total);
             },
             bindEvents : function(){
-                $(win).on('hashchange', $.proxy(this.hashClickFunc, this));
+                //$(win).on('hashchange', $.proxy(this.hashClickFunc, this));
                 this.tabs.on('click','>a',$.proxy(this.tabClickFunc, this));
                 this.movePrevBtn.on('click',$.proxy(this.tabPrevClickFunc, this));
                 this.moveNextBtn.on('click',$.proxy(this.tabNextClickFunc, this));
@@ -180,7 +180,7 @@ button::-moz-focus-inner{padding:0;border:0}
                 //window.location.hash = hash;
             },
             tabClickFunc : function(e){
-                //e.preventDefault();
+                e.preventDefault();
                 
                 this.targetIdx = $(e.delegateTarget);
                 //console.log(this.targetIdx);
