@@ -233,6 +233,9 @@ button::-moz-focus-inner{padding:0;border:0}
             initOpts : function(){
                 this.currentIndex = 0;
                 this.oldIndex = this.currentIndex;
+
+                this.slideContLi.css('left', '-'+this.slideWidth+'px');
+                this.slideContLi.eq(this.currentIndex).css('left',0);
                 this.playType = '0';
             },
             bindEvents : function(){
@@ -263,20 +266,21 @@ button::-moz-focus-inner{padding:0;border:0}
                 this.currentIndex++;
                 if (this.currentIndex >= this.slideContLi.length ) this.currentIndex = 0;
 
-                this.slideNextClickFunc();
+                this.slidePrevClickFunc();
             },
             slidePrevClickFunc : function(){
                 this.slideTabLi.eq(this.oldIndex).removeClass('active');
                 this.slideTabLi.eq(this.currentIndex).addClass('active');
-                this.slideContLi.eq(this.oldIndex).animate({'left' : -this.slideWidth });
-                this.slideContLi.eq(this.currentIndex).animate({'left': 0});
+                this.slideContLi.eq(this.oldIndex).hide();
+                this.slideContLi.eq(this.currentIndex).show();
+                this.slideContLi.eq(this.currentIndex).animate({'left' : 0})
 
                 this.oldIndex = this.currentIndex;
             },
             slideNextClickFunc : function(){
                  this.slideTabLi.eq(this.oldIndex).removeClass('active');
                 this.slideTabLi.eq(this.currentIndex).addClass('active');
-                this.slideContLi.eq(this.oldIndex).animate({ 'right': -this.slideWidth });
+                this.slideContLi.eq(this.oldIndex).animate({ 'left': -this.slideWidth });
                 this.slideContLi.eq(this.currentIndex).animate({ 'left': 0 });
 
                 this.oldIndex = this.currentIndex;
