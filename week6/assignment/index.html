@@ -67,7 +67,7 @@ button::-moz-focus-inner{padding:0;border:0}
             <div class="cast_tab">
                 <ul>
                     <li class="active"><a href="#thema1">테마1</a></li>
-                    <li><a href="#thema1">테마2</a></li>
+                    <li><a href="#thema2">테마2</a></li>
                     <li><a href="#thema3">테마3</a></li>
                     <li><a href="#thema4">테마4</a></li>
                     <li><a href="#thema5">테마5</a></li>
@@ -144,6 +144,7 @@ button::-moz-focus-inner{padding:0;border:0}
                 this.tabs = this.tabArea.find('>ul').children(),
                 this.tabContArea = this.wrap.find('.cast_cont'),
                 this.tabContents = this.tabContArea.children(),
+                this.tabContentsLink = this.tabContents.find('>a'),
                 this.countBtnWrap = $('.cast_num'),
                 this.totalCount = this.countBtnWrap.find('.total'),
                 this.currentCount = this.countBtnWrap.find('.current'),
@@ -159,28 +160,28 @@ button::-moz-focus-inner{padding:0;border:0}
                 this.totalCount.text(total);
             },
             bindEvents : function(){
-                //$(win).on('hashchange', $.proxy(this.hashClickFunc, this));
+                $(win).on('hashchange', $.proxy(this.hashChangeFunc, this));
                 this.tabs.on('click','>a',$.proxy(this.tabClickFunc, this));
                 this.movePrevBtn.on('click',$.proxy(this.tabPrevClickFunc, this));
                 this.moveNextBtn.on('click',$.proxy(this.tabNextClickFunc, this));
             },
-            hashClickFunc : function(){
-                var getHash = window.location.href;
-                console.log(getHash);
-                //var hash = getHash.substring(getHash.indexOf('#'));
-                //console.log(hash);
+            hashChangeFunc : function(e){
+                //var getHash = window.location.href;
+                //this.hash = getHash.substring(getHash.indexOf('#'));
+                //this.getHashTag();
+                //console.log('test ' + window.location.hash.substr(1)); //hash(#제외)
 
-                for(var i=0; i<this.tabContents.length; i++){
-                    var hash = this.tabContents.eq(i).attr('id');
-                    if(hash == window.location.hash) this.currentIndex == i;
+                this.hash = window.location.hash.substr(1);
+
+                if(this.hash){
+                    this.tabContents.removeClass('active');                    
+                    $('#' + this.hash).addClass('active');
                 }
 
                 this.viewContFunc();
-                //var hash = this.tabContents.eq(this.currentIndex).attr('id');
-                //window.location.hash = hash;
             },
             tabClickFunc : function(e){
-                e.preventDefault();
+                //e.preventDefault();
                 
                 this.targetIdx = $(e.delegateTarget);
                 //console.log(this.targetIdx);
@@ -190,6 +191,7 @@ button::-moz-focus-inner{padding:0;border:0}
                 this.viewContFunc();
             },
             viewContFunc : function(){
+                //window.location.href.text(this.hash);                 
                 this.tabs.eq(this.oldIndex).removeClass('active');
                 this.tabs.eq(this.currentIndex).addClass('active');
                 this.tabContents.eq(this.oldIndex).removeClass('active');
@@ -197,7 +199,6 @@ button::-moz-focus-inner{padding:0;border:0}
 
                 this.oldIndex = this.currentIndex;
                 this.currentCount.text(this.currentIndex + 1);
-                //console.log(this.oldIndex);
             },
             tabPrevClickFunc : function(){
                 this.currentIndex--;
@@ -240,7 +241,7 @@ button::-moz-focus-inner{padding:0;border:0}
             },
             bindEvents : function(){
                 this.slidePrevBtn.on('click', $.proxy(this.slidePrevFunc, this));
-                this.slideNextBtn.on('click', $.proxy(this.slideNextFunc, this));
+                //this.slideNextBtn.on('click', $.proxy(this.slideNextFunc, this));
             },
             typeChkFunc : function(){
                 switch(this.playType){
@@ -258,31 +259,29 @@ button::-moz-focus-inner{padding:0;border:0}
             },
             slidePrevFunc : function(e){
                 this.currentIndex--;
+                //console.log(this.currentIndex);
                 if(this.currentIndex < 0) this.currentIndex = this.slideContLi.length - 1;
-
-                this.slidePrevClickFunc();
+                //console.log(this.currentIndex);
+                this.slidePrevClickFunc();            
             },
             slideNextFunc : function(){
                 this.currentIndex++;
-                if (this.currentIndex >= this.slideContLi.length ) this.currentIndex = 0;
-
+                if (this.currentIndex >= this.slideContLi.length) this.currentIndex = 0;
                 this.slidePrevClickFunc();
             },
             slidePrevClickFunc : function(){
                 this.slideTabLi.eq(this.oldIndex).removeClass('active');
                 this.slideTabLi.eq(this.currentIndex).addClass('active');
-                this.slideContLi.eq(this.oldIndex).hide();
-                this.slideContLi.eq(this.currentIndex).show();
-                this.slideContLi.eq(this.currentIndex).animate({'left' : 0})
-
+                this.slideContLi.eq(this.oldIndex).css('left', -this.slideWidth);
+                //this.slideContLi.eq(this.currentIndex).show();
+                this.slideContLi.eq(this.currentIndex).animate({'left' : 0});
                 this.oldIndex = this.currentIndex;
             },
             slideNextClickFunc : function(){
-                 this.slideTabLi.eq(this.oldIndex).removeClass('active');
+                this.slideTabLi.eq(this.oldIndex).removeClass('active');
                 this.slideTabLi.eq(this.currentIndex).addClass('active');
-                this.slideContLi.eq(this.oldIndex).animate({ 'left': -this.slideWidth });
-                this.slideContLi.eq(this.currentIndex).animate({ 'left': 0 });
-
+                //this.slideContLi.eq(this.oldIndex).animate({ 'left': '0', 'right': -this.slideWidth });
+                //this.slideContLi.eq(this.currentIndex).animate({ 'left': 'auto', 'right': 0 });
                 this.oldIndex = this.currentIndex;
             }
         };
