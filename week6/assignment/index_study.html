@@ -153,60 +153,59 @@ button::-moz-focus-inner{padding:0;border:0}
                 this.moveNextBtn = this.moveBtnArea.find('.btn_next');
             },
             initOpts : function(){
-                this.currentIndex = 0;
-                this.oldIndex = this.currentIndex;
-                //total
+                var hash = win.location.hash,
+                //#hash 값과 일치한 요소 선택
+                hashTarget = this.tabContents.filter(hash);
+                //해당 요소의 index
+                this.currentIndex = (hashTarget.length) ? hashTarget.index() : 0;
+                this.viewContFunc();
+
+                //total count
                 var total = this.tabs.length;
                 this.totalCount.text(total);
             },
             bindEvents : function(){
-                $(win).on('hashchange', $.proxy(this.hashChangeFunc, this));
+                //$(win).on('hashchange', $.proxy(this.hashChangeFunc, this));
                 this.tabs.on('click','>a',$.proxy(this.tabClickFunc, this));
                 this.movePrevBtn.on('click',$.proxy(this.tabPrevClickFunc, this));
                 this.moveNextBtn.on('click',$.proxy(this.tabNextClickFunc, this));
             },
-            hashChangeFunc : function(e){
-                this.hash = window.location.hash.substr(1);
-
-                //hash 마지막 숫자 추출
-                this.getHash = this.hash.substr(this.hash.length-1,1);
-                //hash와 현재 index 일치시키기
-                this.currentIndex = this.getHash-1;
-
-                this.viewContFunc();
-            },
             tabClickFunc : function(e){
-                //hashchange event 감지를 위해 이벤트 막기 해제
-                //e.preventDefault();
+                e.preventDefault();
                 this.targetIdx = $(e.delegateTarget);
                 this.currentIndex = this.targetIdx.index();
-                console.log(this.currentIndex);
-            
+                if(this.currentIndex === this.oldIndex) return;
                 this.viewContFunc();
             },
             viewContFunc : function(){
+                this.tabs.eq(0).removeClass('active');
                 this.tabs.eq(this.oldIndex).removeClass('active');
                 this.tabs.eq(this.currentIndex).addClass('active');
+                this.tabContents.eq(0).removeClass('active');
                 this.tabContents.eq(this.oldIndex).removeClass('active');
                 this.tabContents.eq(this.currentIndex).addClass('active');
-
                 this.oldIndex = this.currentIndex;
                 this.currentCount.text(this.currentIndex + 1);
-            },
+            },            
             tabPrevClickFunc : function(){
                 this.currentIndex--;
-                console.log('test'+this.currentIndex);
                 if(this.currentIndex < 0) this.currentIndex = this.tabs.length - 1;
-                this.viewContFunc();                
+                this.viewContFunc();                                
             },
             tabNextClickFunc: function(){
                 this.currentIndex++;
                 if(this.currentIndex == this.tabs.length) this.currentIndex = 0;
+                this.viewContFunc();                
+            },
+            hashChangeFunc : function(e){
+                this.hashUpdate();
                 this.viewContFunc();
+            },
+            hashUpdate : function(){
+                var hashName = this.tabContents.eq(this.currentIndex).attr('id');
+                win.location.hash = '#'+ hashName;
             }
         };
-
-        tabList.init();
 
         var slideList = {
             init : function(){
@@ -228,63 +227,72 @@ button::-moz-focus-inner{padding:0;border:0}
             initOpts : function(){
                 this.currentIndex = 0;
                 this.oldIndex = this.currentIndex;
+                this.playType = 'slide'; // slide or fade
 
-                this.slideContLi.css('left', '-'+this.slideWidth+'px');
-                this.slideContLi.eq(this.currentIndex).css('left',0);
-                this.playType = '0';
+                if(this.playType == 'slide') {
+                    this.slideContLi.css('left', '-'+this.slideWidth+'px');
+                    this.slideContLi.eq(this.currentIndex).css('left','0');
+                }else if(this.playType == 'fade'){
+                    this.slideContLi.hide();
+                    this.slideContLi.eq(this.currentIndex).show();
+                }else {
+                    alert('palyType을 선택해주세요!!');
+                }                
             },
             bindEvents : function(){
                 this.slidePrevBtn.on('click', $.proxy(this.slidePrevFunc, this));
                 this.slideNextBtn.on('click', $.proxy(this.slideNextFunc, this));
-            },
-            typeChkFunc : function(){
-                switch(this.playType){
-                    case 0 :
-                        this.slideClickFun();
-                        break;
-                    case 1 : 
-                        this.fadeClickFunc();
-                        break;
-                    default :
-                        alert('Type 선택을 해주세요!');
-                        break;
-
-                }
             },
             slidePrevFunc : function(e){
                 this.currentIndex--;
                 if(this.currentIndex < 0) this.currentIndex = this.slideContLi.length - 1;
                 this.slidePrevClickFunc();            
             },
-            slideNextFunc : function(){
-                //this.slideTabLi.eq(this.oldIndex).removeClass('active');
-                //this.oldIndex++;
-                this.currentIndex++;
-                if (this.currentIndex >= this.slideContLi.length) this.currentIndex = 0;
-                this.slidePrevClickFunc();
-            },
             slidePrevClickFunc : function(){
                 this.slideTabLi.eq(this.oldIndex).removeClass('active');
-                this.slideTabLi.eq(this.currentIndex).addClass('active');                
-                this.slideContLi.eq(this.oldIndex).css('left', -this.slideWidth);
-                this.slideContLi.eq(this.currentIndex).show();
-                this.slideContLi.eq(this.currentIndex).animate({'left' : 0});
+                this.slideTabLi.eq(this.currentIndex).addClass('active');
+
+                if(this.playType == 'slide'){                
+                    this.slideContLi.css('left', -this.slideWidth);
+                    this.slideContLi.eq(this.currentIndex).show();
+                    this.slideContLi.eq(this.currentIndex).stop().animate({'left' : 0});
+                }else if(this.playType == 'fade'){
+                    this.slideContLi.eq(this.oldIndex).hide();
+                    this.slideContLi.eq(this.currentIndex).fadeIn(400);
+                }else {
+                    alert('palyType을 선택해주세요!!');
+                }
+
                 this.oldIndex = this.currentIndex;
-                console.log(this.oldIndex);
+            },
+            slideNextFunc : function(){
+                this.currentIndex++;
+                if (this.currentIndex >= this.slideContLi.length) this.currentIndex = 0;
+                this.slideNextClickFunc();
             },
             slideNextClickFunc : function(){
                 this.slideTabLi.eq(this.oldIndex).removeClass('active');
                 this.slideTabLi.eq(this.currentIndex).addClass('active');
-                console.log(this.oldIndex);
-                this.slideContLi.eq(this.oldIndex).css('left', this.slideWidth);
-                this.slideContLi.eq(this.currentIndex).show();
-                this.slideContLi.eq(this.currentIndex).animate({'left': 0});
-                this.oldIndex = this.currentIndex;
-            }
-        };
-        
-        slideList.init();
 
+                if(this.playType == 'slide'){    
+                    this.slideContLi.css('left', this.slideWidth + 'px');
+                    this.slideContLi.eq(this.currentIndex).show();
+                    this.slideContLi.eq(this.currentIndex).stop().animate({'left': 0});
+                }else if(this.playType == 'fade'){
+                    this.slideContLi.eq(this.oldIndex).hide();
+                    this.slideContLi.eq(this.currentIndex).fadeIn(400);
+                }else {
+                    alert('palyType을 선택해주세요!!');
+                }
+
+                this.oldIndex = this.currentIndex;
+            }            
+        };
+
+        $(function(){
+            tabList.init();
+            slideList.init();
+        });
 
     })(window, window.jQuery);
 </script>
