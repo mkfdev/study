@@ -104,7 +104,7 @@ hr{display:none}
                 this.layerList.eq(this.currentItem).find('.s-toggle-content').show();
             },
             bindEvents(){
-                //$(win).on('hashchange', $.proxy(this.hashChangeFunc, this));
+                $(win).on('hashchange', $.proxy(this.hashChangeFunc, this));
                 this.layerList.bind('click','a', $.proxy(this.toggleLayerFunc, this));
             },
             hashChangeFunc : function(){
@@ -112,7 +112,7 @@ hr{display:none}
                 win.location.hash = '#' + hashName;
             },
             toggleLayerFunc : function(e){
-                e.preventDefault();                
+                //e.preventDefault();                
                 this.currentItem = $(e.currentTarget).index();
                 this.layerList.eq(this.prevItem).removeClass('active');
                 this.layerList.eq(this.prevItem).find('.s-toggle-content').hide();
