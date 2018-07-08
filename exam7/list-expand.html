@@ -92,17 +92,26 @@ hr{display:none}
                 this.toggleLayer = this.toggler.find('.s-toggle-content');
             },
             initOpts : function(){
-                this.currentItem = 0;
-                this.prevItem = this.currentItem;         
+                var hash = win.location.hash,
+                    hashTarget = hash.substr(-1,1);
+                //console.log(typeof hash);
+                //console.log(hashTarget);
+                this.currentItem = (hashTarget.length) ? hashTarget-1 : 0;
+                this.prevItem = this.currentItem;
             },
             initLayers : function(){
                 this.layerList.eq(this.currentItem).addClass('active');
                 this.layerList.eq(this.currentItem).find('.s-toggle-content').show();
             },
             bindEvents(){
+                //$(win).on('hashchange', $.proxy(this.hashChangeFunc, this));
                 this.layerList.bind('click','a', $.proxy(this.toggleLayerFunc, this));
             },
-            toggleLayerFunc(e){
+            hashChangeFunc : function(){
+                var hashName = this.layerList.eq(this.currentItem).find('.s-toggle-content').attr('id');
+                win.location.hash = '#' + hashName;
+            },
+            toggleLayerFunc : function(e){
                 e.preventDefault();                
                 this.currentItem = $(e.currentTarget).index();
                 this.layerList.eq(this.prevItem).removeClass('active');
@@ -114,6 +123,7 @@ hr{display:none}
         };
 
         accordion.init();
+        
     })(window, window.jQuery);
 </script>
 </body>
