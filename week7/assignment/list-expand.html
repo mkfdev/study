@@ -139,9 +139,9 @@ hr{display:none}
 
                 //data-global-text change
                 if(this.layerList.hasClass('active'))
-                    this.layerWrap.attr('data-global-text', "Expand");
+                    this.layerWrap.attr('data-global-text', this.layerWrap.data('global-text').Expand);
                 else
-                    this.layerWrap.attr('data-global-text', "Collapse");
+                    this.layerWrap.attr('data-global-text', this.layerWrap.data('global-text').Collapse);
 
             }
         };
