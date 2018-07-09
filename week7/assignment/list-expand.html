@@ -124,9 +124,9 @@ hr{display:none}
                 }               
                 //click other elements
                 this.layerList.eq(this.prevItem).removeClass('active');
-                this.layerList.eq(this.prevItem).find('.s-toggle-content').hide();
+                this.layerList.eq(this.prevItem).find('.s-toggle-content').slideUp('fast');
                 this.layerList.eq(this.currentItem).addClass('active');
-                this.layerList.eq(this.currentItem).find('.s-toggle-content').slideDown();
+                this.layerList.eq(this.currentItem).find('.s-toggle-content').slideDown('fast');
                 this.changeExpendedFunc();
                 this.prevItem = this.currentItem;                
             },
