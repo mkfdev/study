@@ -31,13 +31,13 @@ hr{display:none}
 <body>
 <!-- wrapper [s] -->
 <div id="wrap">
-    <div class="s-toggle-layer">
-        <ul>
-        <!-- [D] active 시 .active 추가, aria-expanded="true"로 변경 -->
-        <li class="s-toggle-list" aria-expanded="true" data-global-text='{
+    <div class="s-toggle-layer" data-global-text='{
                 "Expand" : "열림",
                 "Collapse" : "닫힘"
             }'>
+        <ul>
+        <!-- [D] active 시 .active 추가, aria-expanded="true"로 변경 -->
+        <li class="s-toggle-list" aria-expanded="true">
             <a href="#list1" class="s-toggler-title">
                 <em>title</em>
                 <span class="s-ico-toggle">
@@ -86,8 +86,9 @@ hr{display:none}
             },
             setElements : function(){
                 this.wrap = $('#wrap'),
-                this.layerWrap = this.wrap.find('.s-toggle-layer > ul'),
-                this.layerList = this.layerWrap.children(),
+                this.layerWrap = this.wrap.find('.s-toggle-layer'),
+                this.layerWrapUl = this.layerWrap.find('>ul'),
+                this.layerList = this.layerWrapUl.children(),
                 this.toggler = this.layerList.find('.s-toggle-title'),
                 this.toggleLayer = this.toggler.find('.s-toggle-content');
             },
@@ -112,13 +113,36 @@ hr{display:none}
                 win.location.hash = '#' + hashName;
             },
             toggleLayerFunc : function(e){
-                //e.preventDefault();                
+                //e.preventDefault();
                 this.currentItem = $(e.currentTarget).index();
+
+                //click self -> toggle
+                if(this.prevItem == this.currentItem){
+                    this.layerList.eq(this.currentItem).toggleClass('active');
+                    this.layerList.eq(this.currentItem).find('.s-toggle-content').slideToggle();
+                    this.changeExpendedFunc();
+                    return;
+                }
+               
+                //click other elements
                 this.layerList.eq(this.prevItem).removeClass('active');
                 this.layerList.eq(this.prevItem).find('.s-toggle-content').hide();
                 this.layerList.eq(this.currentItem).addClass('active');
                 this.layerList.eq(this.currentItem).find('.s-toggle-content').slideDown();
-                this.prevItem = this.currentItem;
+                this.changeExpendedFunc();
+                this.prevItem = this.currentItem;                
+            },
+            changeExpendedFunc : function(){
+                //aria-expanded change
+                this.layerList.attr('aria-expanded', 'false');
+                $('.active').attr('aria-expanded', 'true');
+
+                //data-global-text change
+                if(this.layerList.hasClass('active'))
+                    this.layerWrap.attr('data-global-text', "Expand");
+                else
+                    this.layerWrap.attr('data-global-text', "Collapse");
+
             }
         };
 
