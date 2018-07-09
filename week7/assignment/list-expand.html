@@ -115,15 +115,13 @@ hr{display:none}
             toggleLayerFunc : function(e){
                 //e.preventDefault();
                 this.currentItem = $(e.currentTarget).index();
-
                 //click self -> toggle
                 if(this.prevItem == this.currentItem){
                     this.layerList.eq(this.currentItem).toggleClass('active');
                     this.layerList.eq(this.currentItem).find('.s-toggle-content').slideToggle();
                     this.changeExpendedFunc();
                     return;
-                }
-               
+                }               
                 //click other elements
                 this.layerList.eq(this.prevItem).removeClass('active');
                 this.layerList.eq(this.prevItem).find('.s-toggle-content').hide();
@@ -136,13 +134,9 @@ hr{display:none}
                 //aria-expanded change
                 this.layerList.attr('aria-expanded', 'false');
                 $('.active').attr('aria-expanded', 'true');
-
                 //data-global-text change
-                if(this.layerList.hasClass('active'))
-                    this.layerWrap.attr('data-global-text', this.layerWrap.data('global-text').Expand);
-                else
-                    this.layerWrap.attr('data-global-text', this.layerWrap.data('global-text').Collapse);
-
+                if(this.layerList.hasClass('active')) this.layerWrap.attr('data-global-text', this.layerWrap.data('global-text').Expand);
+                else this.layerWrap.attr('data-global-text', this.layerWrap.data('global-text').Collapse);
             }
         };
 
