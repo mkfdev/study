@@ -90,64 +90,54 @@ hr{display:none}
                 this.layerWrapUl = this.layerWrap.find('>ul'),
                 this.layerList = this.layerWrapUl.children(),
                 this.toggler = this.layerList.find('.s-toggle-title'),
-                this.toggleLayer = this.layerList.find('.s-toggle-content');
+                this.toggleLayer = this.toggler.find('.s-toggle-content');
             },
             initOpts : function(){
-               this.currentIndex = null
-               this.oldIndex = null;
+                var hash = win.location.hash,
+                    hashTarget = hash.substr(-1,1);
+                //console.log(typeof hash);
+                //console.log(hashTarget);
+                this.currentItem = (hashTarget.length) ? hashTarget-1 : 0;
+                this.prevItem = this.currentItem;
             },
             initLayers : function(){
-              //초기화
-              this.layerList.removeClass('active').attr('aria-expanded','false');
-              this.layerWrap.attr('data-global-text', this.layerWrap.data('global-text').Collapse);
-              this.toggleLayer.hide();
-              if(win.location.hash){
-                  this.hashChangeFunc();
-              }
+                this.layerList.eq(this.currentItem).addClass('active');
+                this.layerList.eq(this.currentItem).find('.s-toggle-content').show();
             },
-            bindEvents : function(){
-                this.layerList.on('click','>a', $.proxy(this.toggleFunc, this));
+            bindEvents(){
                 $(win).on('hashchange', $.proxy(this.hashChangeFunc, this));
-            },
-            toggleFunc : function(e){
-                e.preventDefault();
-                var target = $(e.currentTarget);
-                this.currentIndex = target.closest('li').index();
-                if(this.currentIndex == this.oldIndex) return;                
-                this.addHashName();                
-            },
-            addHashName : function(){
-                var hashName = this.toggleLayer.eq(this.currentIndex).attr('id');
-                win.location.hash = '#' + hashName;
+                this.layerList.bind('click','a', $.proxy(this.toggleLayerFunc, this));
             },
             hashChangeFunc : function(){
-                //hash값을 currentIndex로 받아온다
-                this.getHash();
-                this.hashToggleFunc();
-                this.oldIndex = this.currentIndex;
+                var hashName = this.layerList.eq(this.currentItem).find('.s-toggle-content').attr('id');
+                win.location.hash = '#' + hashName;
             },
-            getHash : function(){
-                var getHash = win.location.hash,
-                    hashTarget = this.toggleLayer.filter(getHash),
-                    hashIndex = hashTarget.closest('li').index();
-                this.currentIndex = (hashTarget.length) ? hashIndex : 0;
-                console.log(this.currentIndex);
-            },
-            hashToggleFunc : function(){
-                this.layerList.eq(this.oldIndex).removeClass('active').attr('aria-expanded', 'false');
-                this.toggleLayer.eq(this.oldIndex).slideUp('fast');
-                this.layerList.eq(this.currentIndex).addClass('active').attr('aria-expanded', 'true');
-                this.toggleLayer.eq(this.currentIndex).slideDown('fast');
+            toggleLayerFunc : function(e){
+                //e.preventDefault();
+                this.currentItem = $(e.currentTarget).index();
+                //click self -> toggle
+                if(this.prevItem == this.currentItem){
+                    this.layerList.eq(this.currentItem).toggleClass('active');
+                    this.layerList.eq(this.currentItem).find('.s-toggle-content').slideToggle();
+                    this.changeExpendedFunc();
+                    return;
+                }               
+                //click other elements
+                this.layerList.eq(this.prevItem).removeClass('active');
+                this.layerList.eq(this.prevItem).find('.s-toggle-content').slideUp('fast');
+                this.layerList.eq(this.currentItem).addClass('active');
+                this.layerList.eq(this.currentItem).find('.s-toggle-content').slideDown('fast');
                 this.changeExpendedFunc();
+                this.prevItem = this.currentItem;                
             },
-            changeExpendedFunc: function () {
+            changeExpendedFunc : function(){
+                //aria-expanded change
+                this.layerList.attr('aria-expanded', 'false');
+                $('.active').attr('aria-expanded', 'true');
                 //data-global-text change
-                if (this.layerList.hasClass('active')) {
-                    this.layerWrap.attr('data-global-text', this.layerWrap.data('global-text').Expand);
-                }else {
-                    this.layerWrap.attr('data-global-text', this.layerWrap.data('global-text').Collapse);
-                }
-            }            
+                if(this.layerList.hasClass('active')) this.layerWrap.attr('data-global-text', this.layerWrap.data('global-text').Expand);
+                else this.layerWrap.attr('data-global-text', this.layerWrap.data('global-text').Collapse);
+            }
         };
 
         accordion.init();
