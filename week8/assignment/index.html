@@ -80,10 +80,10 @@ p{margin-bottom:30px;padding-bottom:10px;border-bottom:2px solid #da0707;font-si
             <div class="select_box opened">
                 <a href="javascript:;" class="select_menu">선택</a>
                 <ul>
-                <li><a href="#">메뉴 1</a></li>
-                <li><a href="#">메뉴 2</a></li>
-                <li><a href="#">메뉴 3</a></li>
-                <li><a href="#">메뉴 4</a></li>
+                    <li><a href="#">메뉴 1</a></li>
+                    <li><a href="#">메뉴 2</a></li>
+                    <li><a href="#">메뉴 3</a></li>
+                    <li><a href="#">메뉴 4</a></li>
                 </ul>
             </div>
         </div>
@@ -96,6 +96,7 @@ p{margin-bottom:30px;padding-bottom:10px;border-bottom:2px solid #da0707;font-si
 <!-- [ Javascript Area ] -->
 <!-- Libs -->
 <script src="../../js/jquery-1.12.4.min.js"></script>
+<script src="../js/jquery.ba-outside-events.min"></script>
 <script>
 (function (win, $) {
     var obj = function (container, args) {
@@ -126,6 +127,7 @@ p{margin-bottom:30px;padding-bottom:10px;border-bottom:2px solid #da0707;font-si
         bindEvents : function(){
             $(this.inpChkWrap).on('change', this.inpChk, $.proxy(this.checkToggleFunc, this));
             $(this.radioBtnWrap).on('change', this.radioBtn, $.proxy(this.radioToggleFunc, this));
+            //$(this.selectboxWrap).on('click', this.selectBtn, $.proxy(this.selectToggleFunc, this));
         },
         checkToggleFunc : function(e){
             var target = $(e.currentTarget);
@@ -151,9 +153,31 @@ p{margin-bottom:30px;padding-bottom:10px;border-bottom:2px solid #da0707;font-si
         }
     };
 
+    //Select Box
+    var selectList = function(container){
+        var defParams = {
+            container: container || '.box3';
+            selectBox: $('.select_box');
+            active: ''
+        };
+        this.opts = $.extend(defParams, (args || {}));
+        this.init();
+    };
+
+    selectList.prototype = {
+        init : function(){
+            this.setElements();
+        }
+    };
+
+    $.fn.pluginSelect = function () {
+        for (var i = 0, max = this.length; i < max; i++) {
+            new selectList(this.eq(i));
+        }
+    };
 
     $(function () {
-        var objCall = new obj();
+        $('.select_box').pluginSelect();  
     });
 })(window, window.jQuery);
 </script>
