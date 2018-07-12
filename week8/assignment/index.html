@@ -57,7 +57,7 @@ p{margin-bottom:30px;padding-bottom:10px;border-bottom:2px solid #da0707;font-si
         <div class="box box1">
             <p>1. 체크박스</p>
             <div class="check_box chk_active">
-                <input type="checkbox" id="agree_v1" class="ipt_chk">
+                <input type="checkbox" id="agree_v1" class="ipt_chk" checked="checked">
                 <span class="chk_box"></span>
             </div>
             <label for="agree_v1" class="sp">개인정보 수집·이용 및 SMS수신에 동의합니다.</label>
@@ -95,38 +95,65 @@ p{margin-bottom:30px;padding-bottom:10px;border-bottom:2px solid #da0707;font-si
     <!-- footer [e] -->
 <!-- [ Javascript Area ] -->
 <!-- Libs -->
-<script src="../js/libs/jquery-1.12.4.min.js"></script>
+<script src="../../js/jquery-1.12.4.min.js"></script>
 <script>
 (function (win, $) {
     var obj = function (container, args) {
-        console.log(args);
         var defParams = {
             container : container || '.box',
-            viewType : null
+            inpChkWrap: '.check_box',
+            inpChk : '.ipt_chk',
+            radioBtnWrap : '.radio_box',
+            radioBtn : '.ipt_rdo',
+            activeClass : 'chk_active'
         };
         this.opts = $.extend(defParams, (args || {}));
         this.init();
-        // console.log(this);
     };
     obj.prototype = {
         init : function () {
-            console.log(this.opts.container);
-            console.log(this.opts.viewType);
+            this.setElements();
+            this.bindEvents();
+        },
+        setElements : function(){
+            this.obj = this.opts.container,
+            this.inpChkWrap = this.opts.inpChkWrap,
+            this.inpChk = this.opts.inpChk,
+            this.radioBtnWrap = this.opts.radioBtnWrap,
+            this.radioBtn = this.opts.radioBtn,
+            this.activeClass = this.opts.activeClass;
+        },
+        bindEvents : function(){
+            $(this.inpChkWrap).on('change', this.inpChk, $.proxy(this.checkToggleFunc, this));
+            $(this.radioBtnWrap).on('change', this.radioBtn, $.proxy(this.radioToggleFunc, this));
+        },
+        checkToggleFunc : function(e){
+            var target = $(e.currentTarget);
+            target.parent().toggleClass(this.activeClass, target.prop('checked'));
+
+            //input에 checked 속성 추가하기
+            if(target.attr('checked')){
+                console.log('ok');
+                target.removeAttr('checked');
+            }else {
+              target.attr('checked', 'checked');  
+            } 
+        },
+        radioToggleFunc : function(e){
+            var target = $(e.currentTarget);            
+            target.parent().toggleClass(this.activeClass);
+            this.changeClearFunc(target);
+        },
+        changeClearFunc : function(target){
+            var targetName = target.attr('name');
+            // 하나만 활성화되도록 나머지에 chk_active 클래스 제거
+            $(this.radioBtnWrap).find(this.radioBtn).filter('[name='+ targetName + ']').not(target).parent().removeClass(this.activeClass);
         }
     };
-    // $.fn.pluginCall = function () {
-    //     for (var i = 0, max = this.length; i < max; i++) {
-    //         new obj(this.eq(i), {viewType : true});
-    //     }
-    // };
+
 
     $(function () {
         var objCall = new obj();
-        var objCall2 = new obj('.wrap', {
-            viewType : false
-        });
-
-        // $('.wrapper').pluginCall();
     });
 })(window, window.jQuery);
 </script>
