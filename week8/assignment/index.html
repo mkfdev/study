@@ -259,8 +259,11 @@ p{margin-bottom:30px;padding-bottom:10px;border-bottom:2px solid #da0707;font-si
             }
         },
         selectOneFunc : function(e){
-            var targetElement = e.currentTarget;
-            var target = $(e.currentTarget).closest(this.opts.container);
+            var targetElement = $(e.currentTarget),
+                targetText = targetElement.text(),
+                target = targetElement.closest(this.opts.container);
+            
+            this.selectOneText.text(targetText);
             this.selectBoxClose(target);
         },
         selectBoxOpen : function(target){
