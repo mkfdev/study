@@ -716,10 +716,62 @@ ins{text-decoration:none}
     <!-- footer [e] -->
 <!-- [ Javascript Area ] -->
 <!-- Libs -->
-<script src="../js/libs/jquery-1.12.4.min.js"></script>
+<script src="../../js/jquery-1.12.4.min.js"></script>
 <script>
 (function (win, $) {
 
+    var scrolling = function(container, args){
+        var defParams = {
+            container : container || '.container',
+            topButton : '.btn_top',
+            footerPos : '#footer',
+            delayTime : '600'
+        };
+        this.opts = $.extend(defParams, (args || {}));
+        this.init();
+    };
+    scrolling.prototype = {
+        init : function(){
+            this.setElements();
+            this.initOpts();
+            this.bindEvents();
+        },
+        setElements : function(){
+            this.wrap = this.opts.container;
+            this.topBtn = this.opts.topButton;
+            this.footerPos = this.opts.footerPos;
+            this.delayTime = this.opts.delayTime;
+        },
+        initOpts : function(){
+            //scrollHeight : 전체 스크롤 길이
+            //footerHeight : footer 높이
+            this.scrollHeight = $(document).height();
+            this.footerHeight = $(this.footerPos).outerHeight(false);
+        },
+        bindEvents : function(){
+            $(win).on('scroll', $.proxy(this.scrollPosChk, this));
+            $(this.topBtn).on('click', $.proxy(this.moveTopFunc, this));
+        },
+        scrollPosChk : function(){
+            //scrollPosition: 현재 스크롤 위치(document 기준)
+            var scrollPosition = $(window).height() + $(window).scrollTop();
+
+            // footer 시작 Position을 현재 스크롤 위치가 넘어갈 때
+            if(scrollPosition > this.scrollHeight - this.footerHeight){
+                $(this.topBtn).fadeOut('200');
+            }else{
+                $(this.topBtn).fadeIn('200');
+            }
+        },
+        moveTopFunc : function(e){
+            e.preventDefault();
+            $('body, html').animate({scrollTop : 0}, this.delayTime);
+        }
+    };
+
+    $(function(){
+        var scrollingCall = new scrolling();
+    });
 
 })(window, window.jQuery);
 </script>
