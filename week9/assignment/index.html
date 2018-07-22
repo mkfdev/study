@@ -41,6 +41,7 @@ ins{text-decoration:none}
 .section.type5{height:355px;background-image:url(img/bg_section04.jpg)}
 
 .quick_menu{position:absolute;top:400px;right:5px;z-index:10;padding:62px 2px 2px;background:#000}
+.quick_menu.is-fixed {position:fixed; top:0; bottom: auto}
 .quick_list{padding:13px 0 9px;background:url(img/bg_quick_menu.jpg) no-repeat; background-size:cover}
 .quick_list a{display:block;padding:12px 11px 11px 16px}
 .quick_menu .sp{height:17px}
@@ -83,16 +84,16 @@ ins{text-decoration:none}
             <div class="quick_menu">
                 <strong class="blind">quick menu</strong>
                 <ul class="quick_list">
-                <li><a href="#none" class="requirements active"><span class="sp">01 REQUIREMENTS</span></a></li>
-                <li><a href="#none" class="benefits"><span class="sp">02 BENEFITS</span></a></li>
-                <li><a href="#none" class="apply"><span class="sp">03 APPLY</span></a></li>
+                <li><a href="#quick_requirements" class="requirements active"><span class="sp">01 REQUIREMENTS</span></a></li>
+                <li><a href="#quick_benefits" class="benefits"><span class="sp">02 BENEFITS</span></a></li>
+                <li><a href="#quick_apply" class="apply"><span class="sp">03 APPLY</span></a></li>
                 <li><a href="#none" class="btn_top"><span class="sp">Go to top</span></a></li>
                 </ul>
             </div>
             <div class="section"></div>
-            <div class="section type2"></div>
-            <div class="section type3"></div>
-            <div class="section type4"></div>
+            <div class="section type2" id="quick_requirements"></div>
+            <div class="section type3" id="quick_benefits"></div>
+            <div class="section type4" id="quick_apply"></div>
             <div class="section type5"></div>
         </div>
     </div>
@@ -103,10 +104,105 @@ ins{text-decoration:none}
     <!-- footer [e] -->
 <!-- [ Javascript Area ] -->
 <!-- Libs -->
-<script src="../js/libs/jquery-1.12.4.min.js"></script>
+<script src="../../js/jquery-1.12.4.min.js"></script>
 <script>
 (function (win, $) {
- 
+    var moveScroll = function(container, args){
+        var defParams = {
+            container : container || '.container',
+            firstSection : '.type2',
+            secondSection : '.type3',
+            thirdSection: '.type4',
+            quickMenu : '.quick_menu',
+            quickListWrap: '.quick_list',
+            quickList : '>li',
+            quickListLink : '>a',
+            fixedClass : 'is-fixed',
+            activeClass : 'active',
+            speed : 300
+        };
+        this.opts = $.extend(defParams, (args || {}));
+        this.init();
+    };
+    moveScroll.prototype = {
+        init : function(){
+            this.setElements();
+            this.initOpts();
+            this.bindEvents();
+        },
+        setElements : function(){
+            this.firstSection = this.opts.firstSection;
+            this.firstSectionPos = $(this.firstSection).offset().top;
+            this.secondSection = this.opts.secondSection;
+            this.secondSectionPos = $(this.secondSection).offset().top;
+            this.thirdSection = this.opts.thirdSection;
+            this.thirdSectionPos = $(this.thirdSection).offset().top;
+            this.quickMenu = this.opts.quickMenu;
+            this.quickListWrap = this.opts.quickListWrap;
+            this.quickList = $(this.quickListWrap).find(this.opts.quickList);          
+        },
+        initOpts : function(){
+            this.quickListLink = $(this.quickList).find(this.opts.quickListLink);
+            this.quickListLink.removeClass(this.opts.activeClass);            
+        },
+        bindEvents : function(){
+            $(win).on('scroll', $.proxy(this.fixedQuickMenu, this));
+            this.quickList.on('click', $.proxy(this.selectQuickList, this));
+        },
+        fixedQuickMenu : function(){
+            var nowPos = $(win).scrollTop();
+
+           //height 덜컹거리는거 how to....?
+            if(nowPos >= this.firstSectionPos){
+                $(this.quickMenu).addClass(this.opts.fixedClass);
+            }else {
+                $(this.quickMenu).removeClass(this.opts.fixedClass);
+            }
+
+            //실행안됨
+            this.quickList.each(function(i){
+                if(nowPos >= $(this).offset().top){
+                    //스크롤이 멈춘후 활성화 해야되는 부분
+                    var id = $(this).attr('id');
+                    $(this).find(this.opts.quickListLink).removeClass(this.opts.activeClass);
+                    $(id).addClass(this.opts.activeClass);
+                }
+            });
+        },
+        selectQuickList : function(e){
+            var target = $(e.currentTarget);
+                targetIndex = target.index();
+            
+            switch(targetIndex){
+                case 0 :
+                    $('body,html').animate({scrollTop : this.firstSectionPos}, this.opts.speed);
+                    this.activeQuickList(targetIndex);
+                    break;
+                case 1 :
+                    $('body,html').animate({ scrollTop: this.secondSectionPos}, this.opts.speed);
+                    this.activeQuickList(targetIndex);
+                    break;
+                case 2:
+                    $('body,html').animate({ scrollTop: this.thirdSectionPos}, this.opts.speed);
+                    this.activeQuickList(targetIndex);
+                    break;
+            }
+        },
+        activeQuickList : function(idx){
+            this.quickList.find(this.opts.quickListLink).removeClass(this.opts.activeClass);
+            this.quickList.eq(idx).find(this.opts.quickListLink).addClass(this.opts.activeClass);
+        },
+        activeCompletedQuickList : function(idx){
+            this.quickList.find(this.opts.quickListLink).removeClass(this.opts.activeClass);
+            this.quickList.eq(idx).find(this.opts.quickListLink).addClass(this.opts.activeClass);
+            console.log('oo');
+        }
+    };
+
+    $(function(){
+       var scrollCall = new moveScroll(); 
+    });
+    
 
 })(window, window.jQuery);
 </script>
