@@ -181,7 +181,7 @@ ins{text-decoration:none}
                     targetPos = target.offset().top;
 
                 // 메뉴에 해당되지 않는 section 영역에서는 메뉴 전부 비활성화
-                if(this.sclTop < this.notLinkedListHei){
+                if(this.sclTop <= this.notLinkedListHei){
                     this.quickListLink.removeClass(this.opts.activeClass);
                 }
 
@@ -193,7 +193,7 @@ ins{text-decoration:none}
             }
         },
         moveScrollTop : function(){
-            $('html, body').animate({ scrollTop : 0 }, 300);
+            $('html, body').animate({ scrollTop : 0 }, this.opts.speed);
         },
         selectQuickList : function(e){
             e.preventDefault();
