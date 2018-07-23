@@ -114,6 +114,7 @@ ins{text-decoration:none}
             firstSection : '.type2',
             secondSection : '.type3',
             thirdSection: '.type4',
+            quickTopBtn : '.btn_top',
             quickMenu : '.quick_menu',
             quickListWrap: '.quick_list',
             quickList : '>li',
@@ -139,9 +140,12 @@ ins{text-decoration:none}
             this.secondSectionPos = $(this.secondSection).offset().top;
             this.thirdSection = this.opts.thirdSection;
             this.thirdSectionPos = $(this.thirdSection).offset().top;
+            this.quickTopBtn = $(this.opts.quickTopBtn);
             this.quickMenu = this.opts.quickMenu;
             this.quickListWrap = this.opts.quickListWrap;
             this.quickList = $(this.quickListWrap).find(this.opts.quickList);
+            this.notLinkedList = $(this.quickList).first();
+            this.notLinkedListHei = this.notLinkedList.outerHeight(false);
             this.timer = null;
             this.sclTop = 0;         
         },
@@ -156,6 +160,7 @@ ins{text-decoration:none}
         bindEvents : function(){
             $(win).on('scroll', $.proxy(this.fixedQuickMenu, this));
             this.quickList.on('click', $.proxy(this.selectQuickList, this));
+            this.quickTopBtn.on('click', $.proxy(this.moveScrollTop, this));
         },
         fixedQuickMenu : function(){
             this.sclTop = $(win).scrollTop();
@@ -175,12 +180,21 @@ ins{text-decoration:none}
                 var target = this.sectionList.eq(i),
                     targetPos = target.offset().top;
 
+
+                // 메뉴에 해당되지 않는 section 영역에서는 메뉴 전부 비활성화
+                if(this.sclTop < this.notLinkedListHei){
+                    this.quickListLink.removeClass(this.opts.activeClass);
+                }
+
                 if(this.sclTop >= targetPos){
                     var _id = target.attr('id');
                     this.quickListLink.removeClass(this.opts.activeClass);
                     $("a[href='#"+_id+"']").addClass(this.opts.activeClass);
                 }
             }
+        },
+        moveScrollTop : function(){
+            $('html, body').animate({ scrollTop : 0 }, 300);
         },
         selectQuickList : function(e){
             e.preventDefault();
@@ -189,15 +203,15 @@ ins{text-decoration:none}
             
             switch(targetIndex){
                 case 0 :
-                    $('body,html').animate({scrollTop : this.firstSectionPos}, this.opts.speed);
+                    $('body,html').animate({ scrollTop : this.firstSectionPos }, this.opts.speed);
                     this.activeQuickList(targetIndex);
                     break;
                 case 1 :
-                    $('body,html').animate({ scrollTop: this.secondSectionPos}, this.opts.speed);
+                    $('body,html').animate({ scrollTop: this.secondSectionPos }, this.opts.speed);
                     this.activeQuickList(targetIndex);
                     break;
                 case 2:
-                    $('body,html').animate({ scrollTop: this.thirdSectionPos}, this.opts.speed);
+                    $('body,html').animate({ scrollTop: this.thirdSectionPos }, this.opts.speed);
                     this.activeQuickList(targetIndex);
                     break;
             }
