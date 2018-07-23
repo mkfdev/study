@@ -110,6 +110,7 @@ ins{text-decoration:none}
     var moveScroll = function(container, args){
         var defParams = {
             container : container || '.container',
+            sectionList : '.section',
             firstSection : '.type2',
             secondSection : '.type3',
             thirdSection: '.type4',
@@ -119,7 +120,7 @@ ins{text-decoration:none}
             quickListLink : '>a',
             fixedClass : 'is-fixed',
             activeClass : 'active',
-            speed : 300
+            speed : 200
         };
         this.opts = $.extend(defParams, (args || {}));
         this.init();
@@ -131,6 +132,7 @@ ins{text-decoration:none}
             this.bindEvents();
         },
         setElements : function(){
+            this.sectionList = $(this.opts.sectionList);
             this.firstSection = this.opts.firstSection;
             this.firstSectionPos = $(this.firstSection).offset().top;
             this.secondSection = this.opts.secondSection;
@@ -139,37 +141,49 @@ ins{text-decoration:none}
             this.thirdSectionPos = $(this.thirdSection).offset().top;
             this.quickMenu = this.opts.quickMenu;
             this.quickListWrap = this.opts.quickListWrap;
-            this.quickList = $(this.quickListWrap).find(this.opts.quickList);          
+            this.quickList = $(this.quickListWrap).find(this.opts.quickList);
+            this.timer = null;
+            this.sclTop = 0;         
         },
         initOpts : function(){
             this.quickListLink = $(this.quickList).find(this.opts.quickListLink);
-            this.quickListLink.removeClass(this.opts.activeClass);            
+            this.quickListLink.removeClass(this.opts.activeClass);
+            
+            //fixed 된 요소의 부모 요소에 높이값을 준다
+            var quickMenuHei = $(this.quickMenu).outerHeight(false);
+            $(this.quickMenu).wrap("<div class='js-"+$(this.quickMenu).attr('class')+"' style='height:"+ quickMenuHei +"'></div>");
         },
         bindEvents : function(){
             $(win).on('scroll', $.proxy(this.fixedQuickMenu, this));
             this.quickList.on('click', $.proxy(this.selectQuickList, this));
         },
         fixedQuickMenu : function(){
-            var nowPos = $(win).scrollTop();
+            this.sclTop = $(win).scrollTop();
 
-           //height 덜컹거리는거 how to....?
-            if(nowPos >= this.firstSectionPos){
+            if(this.sclTop >= this.firstSectionPos){
                 $(this.quickMenu).addClass(this.opts.fixedClass);
             }else {
                 $(this.quickMenu).removeClass(this.opts.fixedClass);
             }
 
-            //실행안됨
-            this.quickList.each(function(i){
-                if(nowPos >= $(this).offset().top){
-                    //스크롤이 멈춘후 활성화 해야되는 부분
-                    var id = $(this).attr('id');
-                    $(this).find(this.opts.quickListLink).removeClass(this.opts.activeClass);
-                    $(id).addClass(this.opts.activeClass);
+            clearTimeout(this.timer);
+            this.timer = setTimeout($.proxy(this.activeTimeAfter,this), 150);
+        },
+        activeTimeAfter : function() {
+            // 시간차를 두고 해당 위치의 quick menu 활성화 시키기
+            for(var i=0; i<this.sectionList.length; i++){
+                var target = this.sectionList.eq(i),
+                    targetPos = target.offset().top;
+
+                if(this.sclTop >= targetPos){
+                    var _id = target.attr('id');
+                    this.quickListLink.removeClass(this.opts.activeClass);
+                    $("a[href='#"+_id+"']").addClass(this.opts.activeClass);
                 }
-            });
+            }
         },
         selectQuickList : function(e){
+            e.preventDefault();
             var target = $(e.currentTarget);
                 targetIndex = target.index();
             
@@ -191,18 +205,12 @@ ins{text-decoration:none}
         activeQuickList : function(idx){
             this.quickList.find(this.opts.quickListLink).removeClass(this.opts.activeClass);
             this.quickList.eq(idx).find(this.opts.quickListLink).addClass(this.opts.activeClass);
-        },
-        activeCompletedQuickList : function(idx){
-            this.quickList.find(this.opts.quickListLink).removeClass(this.opts.activeClass);
-            this.quickList.eq(idx).find(this.opts.quickListLink).addClass(this.opts.activeClass);
-            console.log('oo');
         }
     };
 
     $(function(){
        var scrollCall = new moveScroll(); 
-    });
-    
+    });    
 
 })(window, window.jQuery);
 </script>
