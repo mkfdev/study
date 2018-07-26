@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+  
+    <script>
+        // event: mouseenter mouseleave
+        var obj = {
+            init: function(){
+                this.bindEvents();
+            },
+            bindEvents: function(){
+                $('a').on('mouseenter mouseleave focusIn', $.proxy(this.onclickFunc, this));
+            },
+            onclickFunc : function(e){
+                if(e.type == 'mouseleave' || e.type == ''){
+                    
+                }else if(e.type == 'focusIn'){
+                    //else 사용할 수 없음. 반드시 else if로 어떤 이벤트인지 지정해주고 사용한다
+                }
+            }
+        }
+
+        //'use strict' 엄격한 -> ex) var를 선언하지 않으면 에러 반환
+        //$.extend -> UTIL.extend
+    </script>
+
+    <script>
+    // *과제 - (모바일) 열기버튼 토글, outside 클릭했을 때도 닫힘
+    (function(win, $){
+        'use strict';
+
+        var resizeTest = function(){
+            var defParams = {
+                //breakPoint: 768,
+                viewType: null,
+                breakPoint: {
+                    pc : 1024,
+                    mo : 768
+                }
+            };
+            this.opts = $.extend(defParams, {});
+            this.init();
+        };
+
+        var resizeTest = {
+            init: function(){
+                this.initLayout();
+                this.bindEvents();
+                this.resizeFunc();
+            },
+            initLayout : function(){
+                this.winWidth = $(win).width();
+            },
+            bindEvents : function(){
+                $(win).on('resize', $.proxy(this.resizeFunc, this));
+            },
+            resizeFunc : function(){
+                //console.log(1);
+                //common에 있는 것 사용 나중에
+                this.winWidth = $(win).width();                
+                //console.log(winWidth);
+            },
+            resizeEndFunc : function(){
+                //성능최적화 -> 리사이징 될때마다 실행X , 리사이징을 멈췄을때(시간차를 줌) 실행
+                //setTimeout 사용
+            },
+            setLayout : function(){
+                //모바일로 갔을땐 PC의 이벤트가 제거 되어야 한다 -> 성능 최적화
+                // .off 사용
+                //ie8이하 브라우저(모바일이 아닌 경우) -> 브라우저를 줄여도 모바일이 실행되지 않아야 함
+                if (winWidth > this.opts.breakPoint) {
+                    console.log('PC');
+                    if (this.opts.viewType !== 'pc') {
+                        this.opts.viewType = 'pc';
+                        //PC EVENT
+                    }
+                } else {
+                    console.log('MO');
+                    if (this.opts.viewType !== 'mo') {
+                        this.opts.viewType = 'mo';
+                        //MO EVENT
+                    }
+                }
+            }
+        }
+
+        $(function(){
+            var resizeCall = new resizeTest();
+        })
+
+    })(window, window.jQUery);
+    </script>
+</body>
+
+</html>
