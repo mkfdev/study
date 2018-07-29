@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,target-densitydpi=medium-dpi">
+<title>gnb</title>
+<link rel="stylesheet" type="text/css" href="css/common.css">
+<!--[if lt IE 9]>
+ <script src="/js/html5.js"></script>
+ <script src="/js/respond.min.js"></script>
+ <![endif]-->
+</head>
+<body>
+<!-- wrapper [s] -->
+<div id="wrap">
+    <div id="header">
+        <h1 class="logo"><a href="#">로고</a></h1>
+        <div class="gnb_open"><button type="button" id="btn_gnbopen">열기</button></div>
+        <div id="gnb">
+            <div class="gnb_wrap">
+                <ul class="menu">
+                    <li>
+                        <a href="#" class="btn">‘모노라움’ 학원 소개</a>
+                        <div class="box">
+                            <ul>
+                            <li><a href="#">설립배경</a></li>
+                            <li><a href="#">가치제안</a></li>
+                            <li><a href="#">교육철학 및 경영방침</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#" class="btn">수강안내</a>
+                        <div class="box">
+                            <ul>
+                            <li><a href="#">접수중인 교육과정</a></li>
+                            <li><a href="#">강사소개</a></li>
+                            <li><a href="#">강사 포트폴리오</a></li>
+                            <li><a href="#">연간 교육일정</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#" class="btn">수강문의</a>
+                        <div class="box">
+                            <ul>
+                            <li><a href="#">수강문의</a></li>
+                            <li><a href="#">방문 상담 신청</a></li>
+                            <li><a href="#">모집 알림 신청</a></li>
+                            <li><a href="#">질문 게시판</a></li>
+                            <li><a href="#">이벤트 게시판</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                    <li>
+                        <a href="#" class="btn">수강신청</a>
+                        <div class="box">
+                            <ul>
+                            <li><a href="#">수강신청</a></li>
+                            </ul>
+                        </div>
+                    </li>
+                </ul>
+                <div class="gnb_close"><button type="button" id="btn_gnbclose">닫기</button></div>
+            </div>
+        </div>
+    </div>
+    <div id="container">
+        <div><a href="#">컨텐츠 들어오는 곳</a></div>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+        container<br>
+    </div>
+</div>
+<!-- wrapper [e] -->
+<script src="js/lib/jquery-1.12.4.min.js"></script>
+<script src="js/jquery.ba-outside-events.min.js"></script>
+<script>
+(function (win, $) {
+    'use strict';
+    var resizeFunc = function(container, args){
+        var defParams = {
+            container : container || '#wrap',
+            header : '#header',
+            menuWrap : '.menu',
+            menuList : '> li',
+            activeClass : 'is-active',
+            gnb : '#gnb',
+            menuOpenBtn : '#btn_gnbopen',
+            menuCloseBtn: '#btn_gnbclose',
+            breakPoint : 768,
+            viewType : null
+        };
+        this.opts = $.extend(defParams, {});
+        if (!(this.obj = $(this.opts.container)).length) {
+            alert(this.opts.container + ' does not exist')
+            return;
+        };
+        this.init();
+    };
+
+    resizeFunc.prototype = {
+        init : function(){
+            this.setElements();
+            this.bindEvents();
+            this.initLayout();
+            this.setLayout();
+        },
+        setElements : function(){
+            this.container = $(this.opts.container);
+            this.header = this.container.find(this.opts.header);
+            this.menuWrap = this.container.find(this.opts.menuWrap);
+            this.menuList = this.menuWrap.find(this.opts.menuList);
+            this.gnbMobile = this.container.find(this.opts.gnb);
+            this.menuOpenBtn = this.container.find(this.opts.menuOpenBtn);
+            this.menuCloseBtn = this.gnbMobile.find(this.opts.menuCloseBtn);
+        },
+        bindEvents : function(){
+            $(win).on('resize', $.proxy(this.resizeFunc, this));
+        },
+        initLayout : function(){
+            this.winWidth = $(win).width();
+        },
+        resizeFunc : function(){
+            this.winWidth = $(win).width();
+            //resizing이 끝났을 때
+            this.resizeEndFunc();
+        },
+        resizeEndFunc : function(){   
+            clearTimeout(this.timer);
+            this.timer = setTimeout($.proxy(this.setLayout, this), 150);
+        },
+        setLayout : function(){
+            //pc
+            if (this.winWidth > this.opts.breakPoint) {
+                if (this.opts.viewType !== 'pc') {
+                    this.opts.viewType = 'pc';
+                    console.log('pc');
+                    this.menuList.on('mouseenter mouseleave focusin focusout', '>a', $.proxy(this.menuToggleFunc, this));
+                    this.menuOpenBtn.off('click', $.proxy(this.menuOpenFunc, this));
+                    this.menuCloseBtn.off('click', $.proxy(this.menuCloseFunc, this));
+                }
+            }else { 
+                if (this.opts.viewType !== 'mo') {
+                    this.opts.viewType = 'mo';
+                    console.log('mo');
+                    this.menuList.off('mouseenter mouseleave focusin focusout', '>a', $.proxy(this.menuToggleFunc, this));
+                    this.menuOpenBtn.on('click', $.proxy(this.menuOpenFunc, this));
+                    this.menuCloseBtn.on('click', $.proxy(this.menuCloseFunc, this));
+                }
+            }
+        },
+        menuToggleFunc : function(e){
+            
+            var target = $(e.currentTarget);
+            console.log(target);            
+            target.closest('li').find('.box').toggleClass(this.opts.activeClass);
+        },
+        menuOpenFunc : function(e){
+            this.gnbMobile.animate({ 'right' : 0, 'left' : 0 }, 200);
+            this.gnbMobile.addClass(this.opts.activeClass);
+            //outside click close
+            this.outsideCloseCheck(true);
+        },
+        menuCloseFunc : function(){
+            this.gnbMobile.animate({'right': 'initial', 'left' : '-100%'}, 200);
+            this.gnbMobile.removeClass(this.opts.activeClass);
+            //outside click close 해제
+             this.outsideCloseCheck(false);
+        },
+        outsideCloseCheck : function(check){
+            if(check){
+                this.header.on('clickoutside', $.proxy(this.menuCloseFunc, this));
+            }else{
+                console.log('off');
+                this.header.off('clickoutside', $.proxy(this.menuCloseFunc, this));
+            }
+        }
+    };
+
+    $(function(){
+        var resizeCall = new resizeFunc();
+    })
+
+})(window, window.jQuery);
+</script>
+</body>
+</html>
