@@ -123,7 +123,8 @@
             menuOpenBtn : '#btn_gnbopen',
             menuCloseBtn: '#btn_gnbclose',
             breakPoint : 768,
-            viewType : null
+            viewType : null,
+            animateSpeed : 200
         };
         this.opts = $.extend(defParams, {});
         if (!(this.obj = $(this.opts.container)).length) {
@@ -189,13 +190,13 @@
             target.closest('li').find('.box').toggleClass(this.opts.activeClass);
         },
         menuOpenFunc : function(e){
-            this.gnbMobile.animate({ 'right' : 0, 'left' : 0 }, 200);
+            this.gnbMobile.animate({ 'right' : 0, 'left' : 0 }, this.opts.animateSpeed);
             this.gnbMobile.addClass(this.opts.activeClass);
             //outside click close
             this.outsideCloseCheck(true);
         },
         menuCloseFunc : function(){
-            this.gnbMobile.animate({'right': 'initial', 'left' : '-100%'}, 200);
+            this.gnbMobile.animate({'right': 'initial', 'left' : '-100%'}, this.opts.animateSpped);
             this.gnbMobile.removeClass(this.opts.activeClass);
             //outside click close 해제
              this.outsideCloseCheck(false);
