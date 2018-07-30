@@ -136,6 +136,7 @@
 
     resizeFunc.prototype = {
         init : function(){
+            this.browserChkFunc();
             this.setElements();
             this.bindEvents();
             this.initLayout();
@@ -171,15 +172,15 @@
                 if (this.opts.viewType !== 'pc') {
                     this.opts.viewType = 'pc';
                     console.log('pc');
-                    this.menuList.on('mouseenter mouseleave focusin focusout', $.proxy(this.menuToggleFunc, this));
+                    this.menuList.on('mouseenter mouseleave', $.proxy(this.menuToggleFunc, this));
                     this.menuOpenBtn.off('click', $.proxy(this.menuOpenFunc, this));
                     this.menuCloseBtn.off('click', $.proxy(this.menuCloseFunc, this));
                 }
-            }else { 
+            }else {
                 if (this.opts.viewType !== 'mo') {
                     this.opts.viewType = 'mo';
                     console.log('mo');
-                    this.menuList.off('mouseenter mouseleave focusin focusout', $.proxy(this.menuToggleFunc, this));
+                    this.menuList.off('mouseenter mouseleave', $.proxy(this.menuToggleFunc, this));
                     this.menuOpenBtn.on('click', $.proxy(this.menuOpenFunc, this));
                     this.menuCloseBtn.on('click', $.proxy(this.menuCloseFunc, this));
                 }
@@ -208,6 +209,9 @@
                 console.log('off');
                 this.header.off('clickoutside', $.proxy(this.menuCloseFunc, this));
             }
+        },
+        browserChkFunc : function(){
+
         }
     };
 
