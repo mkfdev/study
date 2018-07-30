@@ -170,7 +170,7 @@
                 if (this.opts.viewType !== 'pc') {
                     this.opts.viewType = 'pc';
                     console.log('pc');
-                    this.menuList.on('mouseenter mouseleave focusin focusout', '>a', $.proxy(this.menuToggleFunc, this));
+                    this.menuList.on('mouseenter mouseleave focusin focusout', $.proxy(this.menuToggleFunc, this));
                     this.menuOpenBtn.off('click', $.proxy(this.menuOpenFunc, this));
                     this.menuCloseBtn.off('click', $.proxy(this.menuCloseFunc, this));
                 }
@@ -178,16 +178,14 @@
                 if (this.opts.viewType !== 'mo') {
                     this.opts.viewType = 'mo';
                     console.log('mo');
-                    this.menuList.off('mouseenter mouseleave focusin focusout', '>a', $.proxy(this.menuToggleFunc, this));
+                    this.menuList.off('mouseenter mouseleave focusin focusout', $.proxy(this.menuToggleFunc, this));
                     this.menuOpenBtn.on('click', $.proxy(this.menuOpenFunc, this));
                     this.menuCloseBtn.on('click', $.proxy(this.menuCloseFunc, this));
                 }
             }
         },
-        menuToggleFunc : function(e){
-            
-            var target = $(e.currentTarget);
-            console.log(target);            
+        menuToggleFunc : function(e){            
+            var target = $(e.currentTarget);       
             target.closest('li').find('.box').toggleClass(this.opts.activeClass);
         },
         menuOpenFunc : function(e){
