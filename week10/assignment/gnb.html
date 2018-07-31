@@ -122,6 +122,7 @@
             gnb : '#gnb',
             menuOpenBtn : '#btn_gnbopen',
             menuCloseBtn: '#btn_gnbclose',
+            menuLayer : '.box',
             breakPoint : 768,
             viewType : null,
             animateSpeed : 200
@@ -188,7 +189,7 @@
         },
         menuToggleFunc : function(e){            
             var target = $(e.currentTarget);       
-            target.closest('li').find('.box').toggleClass(this.opts.activeClass);
+            target.closest('li').find(this.opts.menuLayer).toggleClass(this.opts.activeClass);
         },
         menuOpenFunc : function(e){
             this.gnbMobile.animate({ 'right' : 0, 'left' : 0 }, this.opts.animateSpeed);
@@ -211,7 +212,20 @@
             }
         },
         browserChkFunc : function(){
+            this.isSupportTransform = (function() {
+                return ('WebkitTransform' in document.body.style || 'MozTransform' in document.body.style || 'msTransform' in document.body.style || 'OTransform' in document.body.style || 'transform' in document.body.style);
+            })();
 
+           this.ieEventFunc(this.isSupportTransform);
+        },
+        ieEventFunc : function(check){
+            if(!check){
+                this.menuList.on('mouseenter mouseleave', $.proxy(this.menuToggleFunc, this));
+                this.menuOpenBtn.off('click', $.proxy(this.menuOpenFunc, this));
+                this.menuCloseBtn.off('click', $.proxy(this.menuCloseFunc, this));
+            }else{
+                return;
+            }
         }
     };
 
