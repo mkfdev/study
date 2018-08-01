@@ -167,16 +167,9 @@
         },
         setLayout : function(){
             console.log('browser '+ this.checkBrowser);
-            //pc
-            if (this.winWidth > this.opts.breakPoint) {
-                if (this.opts.viewType !== 'pc') {                    
-
-                    if(this.opts.viewType === 'mo_ie' && !this.checkBrowser){
-                        this.opts.viewType = 'pc';
-                        console.log('ie after pc');
-                        return;
-                    }
-
+            
+            if (!this.checkBrowser || this.checkBrowser && (this.winWidth > this.opts.breakPoint)){
+                if (this.opts.viewType !== 'pc'){
                     this.opts.viewType = 'pc';
                     // PC Ver - [CLICK OUTSIDE EVENT OFF]
                     this.outsideCloseCheck(false);
@@ -184,24 +177,16 @@
                     this.menuOpenBtn.off('click');
                     this.menuCloseBtn.off('click');                    
                     this.menuList.on('mouseenter mouseleave', $.proxy(this.menuToggleFunc, this));                    
-                }
+                }                
             }else {
-                // if mobile and Latest browsers
-                // else if mobile and not checked 
-                // else if mobile and Lower browser(IE8 : check==false)
-                if (this.opts.viewType !== 'mo' && this.checkBrowser){                       
+                 if (this.opts.viewType !== 'mo'){                       
                     this.opts.viewType = 'mo';                                           
                     this.menuList.off('mouseenter mouseleave');
                     this.menuOpenBtn.on('click', $.proxy(this.menuOpenFunc, this));
-                    this.menuCloseBtn.on('click', $.proxy(this.menuCloseFunc, this));                    
-                }else if(this.opts.viewType !== 'mo' && this.checkBrowser == null){
-                    this.opts.viewType = 'mo';
-                    this.menuList.on('mouseenter mouseleave', $.proxy(this.menuToggleFunc, this));
-                }else if(this.opts.viewType !== 'mo' && !this.checkBrowser){                       
-                    this.opts.viewType = 'mo_ie';
-                    return;         
+                    this.menuCloseBtn.on('click', $.proxy(this.menuCloseFunc, this));
                 }
             }
+            
         }, 
         menuToggleFunc : function(e){            
             var target = $(e.currentTarget);
