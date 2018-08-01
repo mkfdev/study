@@ -1,0 +1,111 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<title>Slick example</title>
+<link rel="stylesheet" type="text/css" href="../css/common.css">
+<link rel="stylesheet" type="text/css" href="css/slick.css">
+<style>
+#wrap{max-width:1024px;margin:0 auto}
+.slick-container{position:relative}
+.slick-dots{margin-top:10px;text-align:center}
+.slick-dots li{display:inline-block;overflow:hidden;width:10px;height:10px;margin:0 2px}
+.slick-dots li button{width:100%;height:100%;border:1px solid #000;border-radius:10px;line-height:999px}
+.slick-dots li.slick-active button{background:#000}
+.slick-container > div{height:400px;background:#eee}
+.slick-arrow{overflow:hidden;position:absolute;top:50%;z-index:10;width:20px;height:31px;margin-top:-34px;line-height:999px}
+.slick-arrow.slick-disabled{opacity:.5}
+.slick-prev{left:10px;background:url('img/arrow-left.svg') no-repeat}
+.slick-next{right:10px;background:url('img/arrow-right.svg') no-repeat}
+.slick-dot-custom button{float:left;width:10px;height:10px;border:1px solid #000;margin-left:3px;}
+.slick-dot-custom button.active{background-color:#000;}
+</style>
+</head>
+<body>
+<div id="wrap">
+    <div class="slick-wrap" id="slick">
+        <div class="slick-container">
+            <!-- Slides -->
+            <div>slick1</div>
+            <div>slick2</div>
+            <div>slick3</div>
+        </div>
+   <!--      <div class="slick-dot-custom">
+            <button type="button"></button>
+            <button type="button"></button>
+            <button type="button"></button>
+        </div> -->
+    </div>
+
+</div>
+
+<!-- [ Javascript Area ] -->
+<!-- Libs -->
+<script src="js/jquery-1.12.4.min.js"></script>
+<script src="js/slick.min.js"></script>
+<!-- Apps -->
+<script src="../js/apps/common.js"></script>
+<script>
+(function (win, $) {
+    'use strict';
+    win.examples = win.examples || {};
+    win.examples.common = win.examples.common || {};
+
+    var UTIL = win.examples.common.util;
+
+    win.examples.callSlick = function (obj, args) {
+        var defParams = {
+            obj : obj,
+            container : '.slick-container',
+            dotBtn : '.slick-dot-custom button',
+            activeClass : 'active',
+            slickOpts : {
+                dots : true,
+                arrow : true,
+                autoplay : false,
+                autoplaySpeed : 3000,
+                infinite : false
+            }
+        }
+        this.opts = $.extend({}, defParams, (args || {}));
+        this.obj = $(this.opts.obj);
+        this.init();
+    };
+    win.examples.callSlick.prototype = {
+        init : function () {
+            this.setElements();
+            this.callSlickPlugin();
+            this.bindEvents();
+        },
+        setElements : function () {
+            this.slickObj = this.obj.find(this.opts.container);
+            this.dotBtn = this.obj.find(this.opts.dotBtn);
+        },
+        bindEvents : function () {
+            this.dotBtn.on('click', $.proxy(this.onClickFunc, this));
+        },
+        callSlickPlugin : function () {
+            this.slickObj.on('init beforeChange afterChange', $.proxy(function (e, data) {
+                this.currentSlideIndex = data.currentSlide;
+                this.dotBtn.siblings().removeClass(this.opts.activeClass);
+                this.dotBtn.eq(this.currentSlideIndex).addClass(this.opts.activeClass);
+            }, this));
+            this.slickObj.slick(this.opts.slickOpts);
+        },
+        onClickFunc : function (e) {
+            e.preventDefault();
+            var target = $(e.currentTarget),
+                targetIndex = target.index();
+            this.slickObj.slick('slickGoTo', targetIndex);
+        }
+    };
+
+    $(function () {
+        win.callSlickPlugin = new win.examples.callSlick('#slick');
+    });
+})(window, window.jQuery);
+</script>
+</body>
+</html>
