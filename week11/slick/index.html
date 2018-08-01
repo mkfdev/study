@@ -32,11 +32,11 @@
             <div>slick2</div>
             <div>slick3</div>
         </div>
-   <!--      <div class="slick-dot-custom">
+        <div class="slick-dot-custom">
             <button type="button"></button>
             <button type="button"></button>
             <button type="button"></button>
-        </div> -->
+        </div>
     </div>
 
 </div>
@@ -59,7 +59,7 @@
         var defParams = {
             obj : obj,
             container : '.slick-container',
-            dotBtn : '.slick-dot-custom button',
+            dotBtn : '.slick-dot-custom > button',
             activeClass : 'active',
             slickOpts : {
                 dots : true,
@@ -82,30 +82,48 @@
         setElements : function () {
             this.slickObj = this.obj.find(this.opts.container);
             this.dotBtn = this.obj.find(this.opts.dotBtn);
+            console.log(this.dotBtn.length);
         },
-        bindEvents : function () {
-            this.dotBtn.on('click', $.proxy(this.onClickFunc, this));
+        bindEvents : function(){ 
+            this.dotBtn.on('click', $.proxy(this.clickFunc, this));
         },
-        callSlickPlugin : function () {
-            this.slickObj.on('init beforeChange afterChange', $.proxy(function (e, data) {
+        callSlickPlugin : function () {  
+            this.slickObj.on('init beforeChange afterChange', $.proxy(function (e,data){
+
+                //현재 슬라이드 index
+                // if(e.type === 'init' || e.type === 'afterChange'){
+                //     console.log(data.currentSlide);
+                // }
+
                 this.currentSlideIndex = data.currentSlide;
                 this.dotBtn.siblings().removeClass(this.opts.activeClass);
                 this.dotBtn.eq(this.currentSlideIndex).addClass(this.opts.activeClass);
+
             }, this));
             this.slickObj.slick(this.opts.slickOpts);
         },
-        onClickFunc : function (e) {
-            e.preventDefault();
-            var target = $(e.currentTarget),
-                targetIndex = target.index();
-            this.slickObj.slick('slickGoTo', targetIndex);
+        clickFunc : function(e){
+            console.log(2);
+            var idx = $(e.currentTarget).index();
+            this.slickObj.slick('slickGoTo', idx);
         }
     };
 
+//  UTIL 저장해서 사용
+//animate, enhanced..
+//swiper 높이값x swiper 하위8까지됨
+//iframe resize 
+  
     $(function () {
         win.callSlickPlugin = new win.examples.callSlick('#slick');
     });
-})(window, window.jQuery);
+   
+})(window, window.jQu);
+// use strict -> 엄격한 문법
 </script>
+UTL 
+
 </body>
+<!--  -->
 </html>
+
