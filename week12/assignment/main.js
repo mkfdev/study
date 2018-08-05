@@ -562,7 +562,7 @@
             }
         },
         initListView : function () {
-            // toggleClass 제어
+            // toggleClass 제어 
             this.currentAllView = false;
 
             // data-list-view(is-show된 list)의 숫자가 list의 갯수보다 많으면 show more 버튼을 숨김.
