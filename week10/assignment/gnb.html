@@ -5,10 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,minimum-scale=1.0,user-scalable=no,target-densitydpi=medium-dpi">
 <title>gnb</title>
 <link rel="stylesheet" type="text/css" href="css/common.css">
-<!--[if lt IE 9]>
- <script src="/js/html5.js"></script>
- <script src="/js/respond.min.js"></script>
- <![endif]-->
 </head>
 <body>
 <!-- wrapper [s] -->
@@ -122,8 +118,11 @@
             gnb : '#gnb',
             menuOpenBtn : '#btn_gnbopen',
             menuCloseBtn: '#btn_gnbclose',
+            menuLayer : '.box',
             breakPoint : 768,
-            viewType : null
+            viewType : null,
+            animateSpeed : 200,
+            checkBrowser : null
         };
         this.opts = $.extend(defParams, {});
         if (!(this.obj = $(this.opts.container)).length) {
@@ -137,8 +136,9 @@
         init : function(){
             this.setElements();
             this.bindEvents();
-            this.initLayout();
-            this.setLayout();
+            this.initLayout();            
+            this.setLayout(); 
+            this.browserChkFunc();                                         
         },
         setElements : function(){
             this.container = $(this.opts.container);
@@ -148,6 +148,7 @@
             this.gnbMobile = this.container.find(this.opts.gnb);
             this.menuOpenBtn = this.container.find(this.opts.menuOpenBtn);
             this.menuCloseBtn = this.gnbMobile.find(this.opts.menuCloseBtn);
+            this.checkBrowser = this.opts.checkBrowser;
         },
         bindEvents : function(){
             $(win).on('resize', $.proxy(this.resizeFunc, this));
@@ -157,7 +158,7 @@
         },
         resizeFunc : function(){
             this.winWidth = $(win).width();
-            //resizing이 끝났을 때
+            //resizing 완료 후 event 적용 
             this.resizeEndFunc();
         },
         resizeEndFunc : function(){   
@@ -165,50 +166,59 @@
             this.timer = setTimeout($.proxy(this.setLayout, this), 150);
         },
         setLayout : function(){
-            //pc
-            if (this.winWidth > this.opts.breakPoint) {
-                if (this.opts.viewType !== 'pc') {
+            console.log('browser '+ this.checkBrowser);
+            
+            if (!this.checkBrowser || this.checkBrowser && (this.winWidth > this.opts.breakPoint)){
+                if (this.opts.viewType !== 'pc'){
                     this.opts.viewType = 'pc';
-                    console.log('pc');
-                    this.menuList.on('mouseenter mouseleave focusin focusout', '>a', $.proxy(this.menuToggleFunc, this));
-                    this.menuOpenBtn.off('click', $.proxy(this.menuOpenFunc, this));
-                    this.menuCloseBtn.off('click', $.proxy(this.menuCloseFunc, this));
-                }
-            }else { 
-                if (this.opts.viewType !== 'mo') {
-                    this.opts.viewType = 'mo';
-                    console.log('mo');
-                    this.menuList.off('mouseenter mouseleave focusin focusout', '>a', $.proxy(this.menuToggleFunc, this));
+                    // PC Ver - [CLICK OUTSIDE EVENT OFF]
+                    this.outsideCloseCheck(false);
+                    // MO EVENT OFF              
+                    this.menuOpenBtn.off('click');
+                    this.menuCloseBtn.off('click');                    
+                    this.menuList.on('mouseenter mouseleave', $.proxy(this.menuToggleFunc, this));                    
+                }                
+            }else {
+                 if (this.opts.viewType !== 'mo'){                       
+                    this.opts.viewType = 'mo';                                           
+                    this.menuList.off('mouseenter mouseleave');
                     this.menuOpenBtn.on('click', $.proxy(this.menuOpenFunc, this));
                     this.menuCloseBtn.on('click', $.proxy(this.menuCloseFunc, this));
                 }
             }
-        },
-        menuToggleFunc : function(e){
             
+        }, 
+        menuToggleFunc : function(e){            
             var target = $(e.currentTarget);
-            console.log(target);            
-            target.closest('li').find('.box').toggleClass(this.opts.activeClass);
+            target.closest('li').find(this.opts.menuLayer).toggleClass(this.opts.activeClass);
         },
         menuOpenFunc : function(e){
-            this.gnbMobile.animate({ 'right' : 0, 'left' : 0 }, 200);
+            this.gnbMobile.animate({ 'right' : 0, 'left' : 0 }, this.opts.animateSpeed);
             this.gnbMobile.addClass(this.opts.activeClass);
-            //outside click close
+            //CLICK OUTSIDE EVENT ON
             this.outsideCloseCheck(true);
         },
         menuCloseFunc : function(){
-            this.gnbMobile.animate({'right': 'initial', 'left' : '-100%'}, 200);
+            this.gnbMobile.animate({'right': 'initial', 'left' : '-100%'}, this.opts.animateSpped);
             this.gnbMobile.removeClass(this.opts.activeClass);
-            //outside click close 해제
-             this.outsideCloseCheck(false);
+            //CLICK OUTSIDE EVENT OFF
+            this.outsideCloseCheck(false);
         },
         outsideCloseCheck : function(check){
             if(check){
                 this.header.on('clickoutside', $.proxy(this.menuCloseFunc, this));
             }else{
                 console.log('off');
-                this.header.off('clickoutside', $.proxy(this.menuCloseFunc, this));
+                this.header.off('clickoutside');
             }
+        },
+        browserChkFunc : function(){
+            this.isSupportTransform = (function() {
+                return ('WebkitTransform' in document.body.style || 'MozTransform' in document.body.style || 'msTransform' in document.body.style || 'OTransform' in document.body.style || 'transform' in document.body.style);
+            })();
+
+           // [isSupportTransform] Browser Check => true, false return
+           this.checkBrowser = this.isSupportTransform;
         }
     };
 
