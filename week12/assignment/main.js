@@ -17,8 +17,8 @@
             obj : container,
             filterModule : '.manual-download-filter-new__module', //Menuals,downloads
             personaAnchor : '.manual-download-filter-new__persona-box', //Menuals 안의 3개의 박스
-            ManualDownloadPlugins : [],
-            personaAnchorPlugins : [],
+            ManualDownloadPlugins : [], // ManualDownload (.manual-download-filter-new__module을 넣기 위한) 배열
+            personaAnchorPlugins : [], // PersonaAnchor (.manual-download-filter-new__persona-box를 넣기 위한) 배열 
             loadAfter : null
         }
         this.opts = UTIL.def(defParams, (args || {}));
@@ -219,8 +219,12 @@
         },
         moFocusInitLayout : function (type) {
             if (type) {
+                // this.filterArea의 이전, 다음에 붙인 span의 tabIndex속성을 0으로 준다
+                // tabIndex = 0은 포커스가 가지않는 요소에게 포커스를 줄 수 있다. 
                 this.focusOutObj.attr('tabIndex', 0);
             } else {
+                // this.filterArea의 이전, 다음에 붙인 span의 tabIndex속성을 -1으로 준다
+                // tabIndex = -1은 focus가 가는 요소에게 포커스를 잃게 할수 있다.
                 this.focusOutObj.attr('tabIndex', -1);
             }
         },
@@ -243,47 +247,62 @@
         },
         bindResponsiveEvents : function (type) {
             if (type) {
+                // scroll 이벤트 해제 
                 $(win).off(this.changeEvents('scroll'));
+                //support-filter-btn(mo에서 보임) click 이벤트 off
                 this.filterMoToggler.off(this.changeEvents('click'));
             } else {
+                // type=false (mo버전에서 타고 들어옴) 일때 scroll이 일어나면 scrollFunc 함수를 실행
                 $(win).on(this.changeEvents('scroll'), $.proxy(this.scrollFunc, this));
+                //support-filter-btn(mo)를 click 했을 때 filterMoClickFunc 함수를 실행
                 this.filterMoToggler.on(this.changeEvents('click'), $.proxy(this.filterMoClickFunc, this));
             }
         },
         moFocusBindEvents : function (type) {
+            //웹 접근성(포커스 이동)을 위한 처리(this.filterArea영역에서 포커스가 반복됨)
             if (type) {
+                // fliterArea 상단 span에 focusin을 했을 때 onPrevOut 함수 실행 
                 this.prevFocusOutObj.on(this.changeEvents('focusin'), $.proxy(this.onPrevOut, this));
+                // fliterArea 하단 span에 focusin을 했을 때 onNextOut 함수 실행 
                 this.nextFocusOutObj.on(this.changeEvents('focusin'), $.proxy(this.onNextOut, this));
             } else {
+                // fliterArea 상단 span에 focusin 해제
                 this.prevFocusOutObj.off(this.changeEvents('focusin'));
+                // fliterArea 하단 span에 focusin 해제 
                 this.nextFocusOutObj.off(this.changeEvents('focusin'));
             }
         },
         onPrevOut : function () {
+            // filterArea에서(왼쪽 필터영역) a input button select 요소 중에 보이는 것 중의 last 요소에 focus를 준다
             this.filterArea.find('a, input, button, select').filter(':visible').last().focus();
         },
         onNextOut : function () {
+            // filterArea에서(왼쪽 필터영역) a input button select 요소 중에 보이는 것 중의 first 요소에 focus를 준다
             this.filterArea.find('a, input, button, select').filter(':visible').first().focus();
         },
         resizeFunc : function () {
             this.winWidth = UTIL.winSize().w;
             if (this.opts.resizeStart == null) {
                 this.opts.resizeStart = this.winWidth;
+                // 이해 안가는 부분
                 this.resizeAnimateFunc();
             }
             win.clearTimeout(this.resizeEndTime);
+            // 0.15초 후에 resizeEndFunc를 실행한다 
             this.resizeEndTime = win.setTimeout($.proxy(this.resizeEndFunc, this), 150);
         },
         resizeEndFunc : function () {
             this.opts.resizeStart = null;
             this.setLayout();
             if (UTIL.winSize().w <= BREAKPOINTS.MOBILE) {
+                //요 영역은 anchorObj 요소가 안 잡혀서 해석불가...
                 this.createHeightFunc();
                 this.fixedObjFunc();
                 this.setFilterRange();
             }
             UTIL.cancelAFrame.call(win, this.resizeRequestFrame);
         },
+        //resizeAnimateFunc
         resizeAnimateFunc : function () {
             this.setLayout();
             if (UTIL.winSize().w <= BREAKPOINTS.MOBILE) {
@@ -330,10 +349,12 @@
             this.filterArea.removeClass(this.opts.filterToggleClass);
         },
         setMoLayout : function () {
-            // 모바일 필터 토글 버튼의 is-fixed, is-opend 클래스 제거(초기화.?)
+            // MO 버전에서 클래스 제거-> 초기화 
+            // 모바일 필터 토글 버튼의 is-fixed, is-opened 클래스 제거
             this.filterArea.removeClass(this.opts.filterFixedClass);
             this.filterArea.removeClass(this.opts.filterToggleClass);
         },
+        //scrollFunc 부분 보류 어려움
         scrollFunc : function () {
             this.fixedObjFunc();
             this.setFilterRange();
@@ -358,12 +379,17 @@
         fixedObjFunc : function () {
             var winTop = $(win).scrollTop();
 
+            // lockScroll html에서 보면 처음엔 항상 null인것 같다..
+            // lockType도 그럼 false
+            // false 이면 scrollTop = winTop , 즉 현 스크롤의 위치
             var lockScroll = $('html').data('lockScroll'),
                 lockType = (lockScroll != null) ? true : false,
                 scrollTop = (lockType) ? lockScroll.top : winTop;
 
+            //anchorObjHeight ? anchorObj 요소가 html에서 발견되지 않는다 
             var filterOffsetTop = (lockType) ? lockScroll.top + this.filterObjWrap.offset().top : this.filterObjWrap.offset().top - this.anchorObjHeight;
 
+            // filterOffsetTop 값을 못구함 
             if (scrollTop >= filterOffsetTop) {
                 if (!this.filterArea.hasClass(this.opts.filterFixedClass)) {
                     this.filterArea.addClass(this.opts.filterFixedClass);
@@ -373,6 +399,7 @@
                     this.filterArea.removeClass(this.opts.filterFixedClass);
                 }
             }
+            //position 위치 지정
             this.setPosition();
         },
         setFilterRange : function () {
@@ -638,6 +665,8 @@
     };
 
     //persona plugin
+    // 이 영역은 persona 요소(manual-download-filter-new__persona-box)의 mouseenter, mouseleave 이벤트를 실행시키고
+    // MO에서는 해당 이벤트가 해제되고, PC에서만 작동하도록 이벤트 바인딩 한다. (처음, resize, orientationchange 시에)
     win.smg.support[personaPluginName] = function (container, args) {
         var defParams = {
             obj : container,
@@ -671,10 +700,16 @@
             this.objInput = this.obj.find(this.opts.objInput);
         },
         initLayout : function () {
+            // clear all toggle button
+            // 해당 checkbox가 checked 상태가 아니면, clear all button에 is-disabled class가 추가된다
+            // checked 상태일 때, is-disabled class 제거됨 
             this.objResetBtn.toggleClass(this.opts.disabledClass, !this.objInput.prop('checked'));
+            // 마찬가지로 checkbox가 checked 상태가 아니면, clear all button에 disabled 속성이 붙는다
             this.objResetBtn.prop('disabled', !this.objInput.prop('checked'));
         },
         changeEvents : function (event) {
+            //정확하게 이해는 안가지만...
+            // 이벤트 여러개를 ' '공백으로 구분해서 이벤트들을 events 배열에 넣는 함수인것 같다.
             var events = [],
                 eventNames = event.split(' ');
             for (var key in eventNames) {
@@ -683,14 +718,21 @@
             return events.join(' ');
         },
         bindEvents : function () {
+            // 윈도우 resize, orientationchange(모바일 회전 변경 이벤트)가 일어날 때 resizeFunc 함수 실행
             $(win).on(this.changeEvents('resize orientationchange'), $.proxy(this.resizeFunc, this));
         },
         resizeBindEvents : function (type) {
             if (type) {
+                // pc (type = true)
+                // manual-download-filter-new__persona-box 요소들이 focusin mouseenter mouseleave 됐을 때 onHoverFunc 함수 실행
                 this.obj.on(this.changeEvents('focusin mouseenter mouseleave'), $.proxy(this.onHoverFunc, this));
+                // checkbox 상태가 변화될 때 onChangeFunc 함수 실행 
                 this.objInput.on(this.changeEvents('change'), $.proxy(this.onChangeFunc, this));
+                // s-btn-reset(Clear All)버튼이 클릭 되었을 때 onResetFunc 함수 실행
                 this.objResetBtn.on(this.changeEvents('click'), $.proxy(this.onResetFunc, this));
             } else {
+                // MO 버전일 때 해당 영역 실행 (type = false)
+                // focusin mouseenter mouseleave , input change, reset button click 이벤트 제거 
                 this.obj.off(this.changeEvents('focusin mouseenter mouseleave'));
                 this.objInput.off(this.changeEvents('change'));
                 this.objResetBtn.off(this.changeEvents('click'));
@@ -699,23 +741,31 @@
         resizeFunc : function () {
             this.winWidth = UTIL.winSize().w;
             if (this.opts.resizeStart == null) {
+                // resizeStart 초기 null
+                // resizeStart = this.winWidth;
                 this.opts.resizeStart = this.winWidth;
                 this.resizeAnimateFunc();
             }
+            // resizeEndTime의 호출을 종료 시킨다 
             win.clearTimeout(this.resizeEndTime);
+            // 0.15초 후에  resizeEndFunc를 호출 한다 
             this.resizeEndTime = win.setTimeout($.proxy(this.resizeEndFunc, this), 150);
-        },
-        
+        },        
         resizeEndFunc : function () {
+            // resizeStart를 null로 초기화 
             this.opts.resizeStart = null;
+            // resizeControl (pc일 경우 Event를 바인딩/ mo일 경우 Event 해제)
             this.resizeControl();
+            // UTIL에 내장된 canclAFrame이 있는것 같은데. resizeRequestFrame을 window에서 호출 하는 것? 해석 안되는 부분
             UTIL.cancelAFrame.call(win, this.resizeRequestFrame);
         },
         resizeAnimateFunc : function () {
             this.resizeControl();
+            // 해석 안되는 부분 : requestAFrame이 win에서 resizeAnimateFunc메서드를 호출. -> resizeControl 호출 
             this.resizeRequestFrame = UTIL.requestAFrame.call(win, $.proxy(this.resizeAnimateFunc, this));
         },
         resizeControl : function () {
+            //pc, mo 스크린 크기에 따른 resizeControl
             if (!UTIL.isSupportTransform || UTIL.isSupportTransform && (this.winWidth > BREAKPOINTS.MOBILE)) {
                 if (this.opts.viewType !== 'pc') {
                     this.opts.viewType = 'pc';
@@ -738,41 +788,66 @@
             }
         },
         onResetFunc : function () {
+            // checkbox checked 속성 false로 지정 
             this.objInput.prop('checked', false);
+            // chekcbox wrap에 is-checked 클래스 제거 
             this.objInput.closest(this.opts.inputWrap).removeClass(this.opts.checkedClass);
+            // s-btn-reset(Clear All)에 is-disabled 클래스 추가
             this.objResetBtn.addClass(this.opts.disabledClass);
+            // s-btn-reset(Clear All)에 disabled 속성 추가
             this.objResetBtn.prop('disabled', true);
+            // manual-download-filter-new__persona에서 mouseleave Event Handler 발생 시킴 
             this.obj.triggerHandler('mouseleave');
         },
         onHoverFunc : function (e) {
             var target = $(e.currentTarget);
+            //windowClass(s-detail-window)가 붙으면 hover 이벤트 실행안함 (onHoverFunc 함수 탈출)
             if (target.hasClass(this.opts.windowClass)) return;
+
+            //마우스 오버되거나 포커스인 됐을 때
             if (e.type === 'mouseenter' || e.type === 'focusin') {
+                // is-active 클래스를 가지고 있지 않으면 
                 if (!target.hasClass(this.opts.activeClass)) {
+                    // target에 is-active 클래스를 붙여준다
                     target.addClass(this.opts.activeClass);
+                    // 키보드 focusout으로 mouseleave를 실행하기 위해 사용하는 것,,?
                     this.bindOutsideEvents(target, true);
                 }
             } else if (e.type === 'mouseleave' || e.type === 'focusout') {
+                // mouseleave 되거나 포커스아웃 됐을 때 
+                // if checkbox가 checked(활성화)된 것이 존재하면 다음 줄 실행 안하고 나옴
                 if (this.objInput.filter(':checked').length) return;
+                // checkbox가 checked 된 것이 없고 mouseleave, focusout 됐을 때 실행                
                 this.bindOutsideEvents(target, false);
             }
             this.outCallback('loadAfter');
         },
         bindOutsideEvents : function (target, type) {
             if (type) {
+                // type 인자 값이 true이면
+                // 여러개 .manual-download-filter-new__persona-box (obj)에서 is-active 삭제
                 this.obj.removeClass(this.opts.activeClass);
+                //target 바깥 영역에 focus(focusOut)
                 target.on('focusoutside', $.proxy(function () {
+                    // trigerHandler는 기본이벤트가 발생하지 않고 핸들러 함수만 mouseleave 발생시킨다
+                    // div의 기본이벤트는 뭐지...?
                     target.triggerHandler('mouseleave');
                 }, this));
+                // 현재 target에 is-active 클래스가 붙는다 
+                // (is-acitve 클래스가 붙으면 하위에 있는 manual-download-filter-new__persona-detail가 show된다)
                 target.addClass(this.opts.activeClass);
             } else {
                 if (target) {
+                    //target이 있지만, type이 false 일때는(어떨때인지...)
+                    // is-active 클래스 제거됨
+                    // focusoutside 이벤트 제거 
                     target.removeClass(this.opts.activeClass);
                     target.off('focusoutside');
                 }
             }
         },
         outCallback : function (ing) {
+            //여기 잘 모르겠다 
             var callbackObj = this.opts[ing];
             if (callbackObj == null) return;
             callbackObj();
