@@ -379,8 +379,7 @@
         fixedObjFunc : function () {
             var winTop = $(win).scrollTop();
 
-            // lockScroll html에서 보면 처음엔 항상 null인것 같다..
-            // lockType도 그럼 false
+
             // false 이면 scrollTop = winTop , 즉 현 스크롤의 위치
             var lockScroll = $('html').data('lockScroll'),
                 lockType = (lockScroll != null) ? true : false,
@@ -405,13 +404,23 @@
         setFilterRange : function () {
             var winTop = $(win).scrollTop();
 
-            //요부분 이해안감(보류)
+            //lockScroll(key)의 value를 가져온다
+            //비활성화시 null
+            //활성화시 style(css)가 들어있음 
             var lockScroll = $('html').data('lockScroll'),
+                //lockScroll이 null이면 false (비활성화)
+                //lockScroll이 null이 아니면 true 
                 lockType = (lockScroll != null) ? true : false,
+                //false일땐 winTop 현재 위치 유지
+                //true일땐 lockScroll.top값 가져온다 
                 scrollTop = (lockType) ? lockScroll.top : winTop;
 
+                //filterWrapHeight = 현재 filter의 높이값
             var filterWrapHeight = this.obj.height(),
+                // lockType이 false 일땐 filterOffsetTop = 현재 filter의 top 값 , 
+                // lockType이 true 일땐 fileterOffsetTop = 현재 filter의 top 값 + lockScroll이 가지고 있는 top값 
                 filterOffsetTop = (lockType) ? lockScroll.top + this.obj.offset().top : this.obj.offset().top,
+                // filterObjHeight 를 못 찾겠다 ㅠㅠ
                 filterEndRange = filterWrapHeight + filterOffsetTop - this.filterObjHeight;
             
             if (scrollTop >= filterEndRange) {
@@ -443,7 +452,7 @@
                 lockElements.toggleClass(lockClass, type); // $('html').toggleClass(hive-scroll-lock, type) 
                 // -> scrollLock.init(true)일때 클래스가 붙는것?
                 if (type) {
-                    if (UTIL.isDevice && UTIL.isIOS) { // IOS 기기 대응인듯
+                    if (UTIL.isDevice && UTIL.isIOS) {
                         if (lockOpts.scrollLocked || (lockElements.data('lockScroll') != null)) return;
                         lockOpts.appliedLock = {}; //appliedLock = {} 처음에도 비워져있는데.. {} 빈 객체로 초기화한다
                         this.scrollLock.saveStyles.call(this); //scrollLock 객체가 saveStyles 메서드 호출: lockOpts.prevStyles 객체에 값이 덮어짐
@@ -453,23 +462,24 @@
                             'top' : - lockOpts.prevScroll.scrollTop
                         });
                         lockElements.css(lockOpts.appliedLock); //$('html').css(위에서 넣었던 appliedLock css를 추가해준다)
-                        lockElements.data('lockScroll', { 
-                            'left' : lockOpts.prevScroll.scrollLeft,
+                        lockElements.data('lockScroll', { //data(key, value) ->  key: data가 저장될 key 값, value: 데이터 저장, 요기서는 lockScroll에 left,top값 저장
+                            'left' : lockOpts.prevScroll.scrollLeft, 
                             'top' : lockOpts.prevScroll.scrollTop
                         });
-                        lockOpts.scrollLocked = true;
+                        lockOpts.scrollLocked = true; // scrollLocked = true (lock이 활성화)
                     }
-                } else {
+                } else { // type = false
                     if (UTIL.isDevice && UTIL.isIOS) {
+                        // scrollLocked 가 false 이거나 lockScroll 값이 null 일 때, 이 영역을 실행하지 않고 나간다
                         if (!lockOpts.scrollLocked || (lockElements.data('lockScroll') == null)) return;
-                        this.scrollLock.saveStyles.call(this);
-                        for (var key in lockOpts.appliedLock) {
-                            delete lockOpts.prevStyles[key];
+                        this.scrollLock.saveStyles.call(this); // scrollLock
+                        for (var key in lockOpts.appliedLock) { // appliedLock의 요소들을 반복 
+                            delete lockOpts.prevStyles[key]; // prevStyles에서 appliedLock의 key값을 이용해서 매치되는 배열 요소를 삭제 한다 
                         }
-                        lockElements.attr('style', $('<x>').css(lockOpts.prevStyles).attr('style') || '');
-                        lockElements.data('lockScroll', null);
-                        $(win).scrollLeft(lockOpts.prevScroll.scrollLeft).scrollTop(lockOpts.prevScroll.scrollTop);
-                        lockOpts.scrollLocked = false;
+                        lockElements.attr('style', $('<x>').css(lockOpts.prevStyles).attr('style') || '');//?
+                        lockElements.data('lockScroll', null);//html요소의 lockScorll 값을 null로 저장
+                        $(win).scrollLeft(lockOpts.prevScroll.scrollLeft).scrollTop(lockOpts.prevScroll.scrollTop); // prevScorll 위치로 이동
+                        lockOpts.scrollLocked = false; // scrollLocked = false (lock이 비활성화)
                     }
                 }
             },
@@ -532,6 +542,7 @@
         },
         bindOutsideEvents : function (type) {
             if (type) {
+                // fileterLayerArea 바깥 영역을 클릭하면 onLyayerOutsideFunc을 실행 
                 this.filterLayerArea.on('clickoutside touchendoutside', $.proxy(this.onLayerOutsideFunc, this));
             } else {
                 // pc 버전에서 이벤트 해제
@@ -579,10 +590,16 @@
             }
         },
         accessbilityFunc : function (type) {
+            // 웹접근성 글로벌 텍스트 넣는 영역
             if (type) {
+                //filterToggler(filter-list의 타이틀)의 accessbility-Active의 값을 !(not). 있으면 false?
                 var currentAccessType = !this.filterToggler.data(this.opts.accessData.dataActive),
+                // currentAccessType이 true이면 globalTxt.Expand,
+                // false 이면 gloablText.Collapse
                     globalTxt = (currentAccessType) ? this.globalText.Expand : this.globalText.Collapse;
+                // 현재 filterToggler의 dataActive은 currentAccessType이 true이면 'accessbility-Active'
                 this.filterToggler.data(this.opts.accessData.dataActive, currentAccessType);
+                // filterToggler에서 accessText(.blind)요소를 찾아서 해당 요소에 globalTxt 값(텍스트)을 넣어준다 
                 this.filterToggler.find(this.opts.accessText).text(globalTxt);
             } else {
                 this.listToggleBtn.toggleClass(this.opts.icoUpClass, this.currentAllView);
@@ -626,12 +643,14 @@
             e.preventDefault();
             this.currentAllView = !this.currentAllView;
             this.setListLayout();
+            // listWrap = filter 안의 list들을 감싼 요소
             this.scrollMoveFunc(this.listWrap);
             this.accessbilityFunc(false);
         },
         listAjaxAfter : function () {
             this.listChild = this.listParent.children();
             this.listNum = this.listParent.children().length;
+            // initListView() 실행
             this.initListView();
         },
         setListLayout : function () {
@@ -643,19 +662,29 @@
             this.outCallback('loadAfter');
         },
         scrollMoveFunc : function (target) {
+            //target(this.listWrap)이 없으면 실행하지 않는다 
             if (!target.length) return;
+            // scrollTop : this.listWrap의 top 값 (소수점 올림)
             var scrollTop = Math.ceil(target.offset().top),
+            // winTop: 현재 스크롤 위치 
                 winTop = $(win).scrollTop(),
+            // stickHeight = scrollTop(listWrap top 값) - PAGE 객체의 stickyArea 메서드 호출..?
                 stickyHeight = PAGE.stickyArea(scrollTop),
+            // filterHeight = filterArea(listWrap + filter Title영역)의 높이 값
                 filterHeight = this.filterObjHeight,
+            // moveTopPosition = listWrap.top - stickyHeight
                 moveTopPosition = scrollTop - stickyHeight,
+            // moveTop은 filterArea에 is-fixed가 없으면  moveTopPosition
+            // is-fixed가 있으면 moveTopPosition - filterHeight
                 moveTop = (!this.filterArea.hasClass(this.opts.filterFixedClass)) ? moveTopPosition : moveTopPosition - filterHeight;
+            //moveTop과 winTop이 같으면 다음 코드 실행하지 않고 나온다 
             if (moveTop === winTop) return;
+            // 현재 위치를 moveTop 으로 이동시킨다 (0.5초 동안)
             $('html, body').animate({
                 'scrollTop' : moveTop
             }, this.opts.duration);
         },
-        //?
+        //..?
         outCallback : function (ing) {
             var callbackObj = this.opts[ing];
             if (callbackObj == null) return;
