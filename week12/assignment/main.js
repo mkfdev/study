@@ -435,23 +435,25 @@
         },
         scrollLock : {
             init : function (type) {
+                // 초기 scrollLock = true -> !true = false 첫번째 줄 통과 
                 if (!this.opts.scrollLock) return;
-                var lockClass = this.opts.scrollLockClass,
-                    lockOpts = this.opts.scrollLockOpts,
-                    lockElements = $(lockOpts.lockElements);
-                lockElements.toggleClass(lockClass, type);
+                var lockClass = this.opts.scrollLockClass, //hive-scroll-lock
+                    lockOpts = this.opts.scrollLockOpts, // scrollLocked = false 등등
+                    lockElements = $(lockOpts.lockElements); // $('html')
+                lockElements.toggleClass(lockClass, type); // $('html').toggleClass(hive-scroll-lock, type) 
+                // -> scrollLock.init(true)일때 클래스가 붙는것?
                 if (type) {
-                    if (UTIL.isDevice && UTIL.isIOS) {
+                    if (UTIL.isDevice && UTIL.isIOS) { // IOS 기기 대응인듯
                         if (lockOpts.scrollLocked || (lockElements.data('lockScroll') != null)) return;
-                        lockOpts.appliedLock = {};
-                        this.scrollLock.saveStyles.call(this);
-                        this.scrollLock.saveScrolls.call(this);
-                        $.extend(lockOpts.appliedLock, lockOpts.lockStyles, {
+                        lockOpts.appliedLock = {}; //appliedLock = {} 처음에도 비워져있는데.. {} 빈 객체로 초기화한다
+                        this.scrollLock.saveStyles.call(this); //scrollLock 객체가 saveStyles 메서드 호출: lockOpts.prevStyles 객체에 값이 덮어짐
+                        this.scrollLock.saveScrolls.call(this); //scrollLock 객체가 saveScrolls 메서드 호출 : lockOpts.prevScroll 객체에 스크롤 값이 저장됨
+                        $.extend(lockOpts.appliedLock, lockOpts.lockStyles, { // appliedLock 객체에 lockStyles 값과 아래에 left, top 값이 덮어져 병합된다
                             'left' : - lockOpts.prevScroll.scrollLeft,
                             'top' : - lockOpts.prevScroll.scrollTop
                         });
-                        lockElements.css(lockOpts.appliedLock);
-                        lockElements.data('lockScroll', {
+                        lockElements.css(lockOpts.appliedLock); //$('html').css(위에서 넣었던 appliedLock css를 추가해준다)
+                        lockElements.data('lockScroll', { 
                             'left' : lockOpts.prevScroll.scrollLeft,
                             'top' : lockOpts.prevScroll.scrollTop
                         });
@@ -471,28 +473,28 @@
                     }
                 }
             },
-            saveStyles : function () {
+            saveStyles : function () { //$('html')의 스타일 속성들을 추출해서 lockOpts.prevStyles에 저장하는 메서드
                 var styleStrs = [],
                     styleHash = {},
-                    lockOpts = this.opts.scrollLockOpts,
-                    lockElements = $(lockOpts.lockElements),
-                    styleAttr =  lockElements.attr('style');
-                if (!styleAttr) return;
-                styleStrs = styleAttr.split(';');
-                $.each(styleStrs, function styleProp (styleString) {
-                    var styleString = styleStrs[styleString];
-                    if (!styleString) return;
-                    var keyValue = styleString.split(':');
-                    if (keyValue.length < 2) return;
-                    styleHash[$.trim(keyValue[0])] = $.trim(keyValue[1]);
+                    lockOpts = this.opts.scrollLockOpts, //scrollLocked = false 등등 여러 객체가 선언되어 있음
+                    lockElements = $(lockOpts.lockElements), //$('html')
+                    styleAttr =  lockElements.attr('style'); //$('html').attr('style')
+                if (!styleAttr) return; //style이 없으면 실행 안함
+                styleStrs = styleAttr.split(';'); //style 속성의 값들을 ;로 쪼개서 styleStrs 배열에 차례대로 넣는다 
+                $.each(styleStrs, function styleProp (styleString) { // styleString = index..?
+                    var styleString = styleStrs[styleString]; //styleStrs[0] ~ styleStrs[styleStrs 갯수-1]
+                    if (!styleString) return; //styleString (styleStrs 배열이 없으면) 없으면 실행안하고 each문을 나간다
+                    var keyValue = styleString.split(':'); //keyValue 에 값을 :로 쪼개서 넣는다 
+                    if (keyValue.length < 2) return; //keyValue 배열의 갯수가 2개가 안되면 실행안하고 여기서 나간다
+                    styleHash[$.trim(keyValue[0])] = $.trim(keyValue[1]); // styleHash 객체에 key는 keyValue[0], value는 keyValue[1]인 형태의 객체 값을 넣는다 
                 });
-                $.extend(lockOpts.prevStyles, styleHash);
+                $.extend(lockOpts.prevStyles, styleHash); //styleHash의 값이 prevStyles 값을 덮어쓰며 병합된다($.extend : Object 합침)
             },
-            saveScrolls : function () {
-                var lockOpts = this.opts.scrollLockOpts;
-                lockOpts.prevScroll = {
-                    scrollLeft : $(win).scrollLeft(),
-                    scrollTop : $(win).scrollTop()
+            saveScrolls : function () { //현재 스크롤 위치 값을 저장하는 메서드 
+                var lockOpts = this.opts.scrollLockOpts; //scrollLocked = false 등등 여러 객체가 선언되어 있음
+                lockOpts.prevScroll = { // lockOpts.prevScorll = {} 에 아래에 값들을 넣음 
+                    scrollLeft : $(win).scrollLeft(), //scrollLeft 수평 스크롤 위치
+                    scrollTop : $(win).scrollTop() // scrollTop 수직 스크롤 위치(현재 스크롤 위치)
                 };
             }
         },
