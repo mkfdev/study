@@ -56,18 +56,28 @@
             }
         },
         loadAfterFunc : function () {
+            //outCallback 함수 호출 
             this.outCallback('loadAfter');
         },
         outCallback : function (ing) {
+            // ing = loadAfter
             var callbackObj = this.opts[ing];
+            // callbackObj 값이 null이면 return. 그냥 나온다 
             if (callbackObj == null) return;
+            // callbackObj 값이 있으면 callbackObj()실행
             callbackObj();
         },
-        reInit : function () { // where? 어디서 호출하는지 모르겠다..
+        reInit : function () { 
+            // _this에 this값 복사 
             var _this = this;
+            // ManualDownloadPlugin의 개수는 2 (Manual, Download)
+            // i는 0, 1 
             for (var i = 0, max = this.opts.ManualDownloadPlugins.length; i < max; i++) {
                 (function (index) {
+                    //target에 현재 obj의 manualDownloadPlugins[0]와 [1] 배열을 순서대로 넣는다 
                     var target = _this.opts.ManualDownloadPlugins[i];
+                    // manualDownloadPlugins[0].reInit() 실행 
+                    // manualDownloadPlugins[1].reInit() 실행
                     target.reInit();
                 })(i);
             }
