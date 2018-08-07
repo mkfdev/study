@@ -170,9 +170,13 @@
 
             //$.trim 양 끝의 공백을 제거한 후, 문자열 데이터를 globalText에 출력해준다
             this.globalText = {
+                // this.globalText = Collapse (global 텍스트가 존재하고, filter-new의 globalText가 Collapse일 때)
                 Collapse : (globalText && globalText.Collapse) ? $.trim(globalText.Collapse) : '',
+                // this.globalText = Expand (global 텍스트가 존재하고, filter-new의 globalText가 Expand일 때)
                 Expand : (globalText && globalText.Expand) ? $.trim(globalText.Expand) : '',
+                // this.globalText = showMore (global 텍스트가 존재하고, filter-new의 globalText가 showMore일 때)
                 showMore : (globalText && globalText.showMore) ? $.trim(globalText.showMore) : '',
+                // this.globalText = showLess (global 텍스트가 존재하고, filter-new의 globalText가 showLess일 때)
                 showLess : (globalText && globalText.showLess) ? $.trim(globalText.showLess) : ''
             };
 
@@ -240,9 +244,13 @@
             return events.join(' ');
         },
         bindEvents : function () {
+            // window에서 resize, 화면 방향 전환이 일어날 떄는 resizeFunc 함수 실행
             $(win).on(this.changeEvents('resize orientationchange'), $.proxy(this.resizeFunc, this));
+            // filterToggler를 클릭하면 filterToggleFunc 함수 실행 
             this.filterToggler.on(this.changeEvents('click'), $.proxy(this.filterToggleFunc, this));
+            // listToggleBtn을 클릭하면 listToggleFunc 함수 실행
             this.listToggleBtn.on(this.changeEvents('click'), $.proxy(this.listToggleFunc, this));
+            // listWrap(filter list) ajaxafter(비동기 호출 후? 호출 할때?) listAjaxAfter 함수 실행 
             this.listWrap.on(this.changeEvents('ajaxafter'), $.proxy(this.listAjaxAfter, this));
         },
         bindResponsiveEvents : function (type) {
@@ -354,24 +362,33 @@
             this.filterArea.removeClass(this.opts.filterFixedClass);
             this.filterArea.removeClass(this.opts.filterToggleClass);
         },
-        //scrollFunc 부분 보류 어려움
         scrollFunc : function () {
             this.fixedObjFunc();
             this.setFilterRange();
         },
         createHeightFunc : function () {
+            // 구버전 브라우저 (언제나 최신 브라우저 PC버전과 같이 작동하게)
             if (!UTIL.isSupportTransform) {
+                //filterWrap에 height 주지 않음
                 this.filterObjWrap.css('height', '');
+                //filterArea top 값도 주지 않음 
                 this.filterArea.css('top', '');
             } else {
+                // 구버전 브라우저가 아니고 현재 window width가 BREAKPOINTS.MOBILE 사이즈보다 클 때 -> PC 버전
                 if (UTIL.winSize().w > BREAKPOINTS.MOBILE) {
+                    //filterWrap에 height 주지 않음
                     this.filterObjWrap.css('height', '');
+                    //filterArea top 값도 주지 않음 
                     this.filterArea.css('top', '');
                 } else {
+                    // 구버전 브라우저가 아니고 현재 window width가 BREAKPOINTS.MOBILE 사이즈보다 작을 때 -> 모바일 버전
                     this.anchorObjHeight = this.anchorObj.outerHeight(true);
                     this.filterObjHeight = this.filterArea.outerHeight(true);
+                    //anchorObj가 있으면 this.anchorObjHeight 값, 없으면 0을 준다 
                     this.filterObjPosition = (this.anchorObj.length) ? this.anchorObjHeight : 0;
+                    // filterWrap에 높이값을 filterObj 요소의 높이값만큼 지정해준다 
                     this.filterObjWrap.css('height', this.filterObjHeight);
+                    // filterArea의 top값은 anchorObj(.support-anchor-navi)가 있으면 anchorObj의 높이값을 주고, 없으면 그냥 0을 준다 
                     this.filterArea.css('top', this.filterObjPosition);
                 }
             }
@@ -511,26 +528,37 @@
         filterMoClickFunc : function (e) {
             e.preventDefault();
             var filterOffsetTop = Math.ceil(this.filterObjWrap.offset().top - this.anchorObjHeight, 10);
+            // filterViewType이 true가 아닐 때 
             if (!this.opts.filterViewType) {
+                // filterViewType을 true로 지정하고 
                 this.opts.filterViewType = true;
+                //filterArea가 is-fixed 클래스를 가지고 있지 않을 때 
                 if (!this.filterArea.hasClass(this.opts.filterFixedClass)) {
+                    // 현재 스크롤 위치를 filterOffsetTop으로 0.5초의 속도로 이동시킨다 
                     $('html, body').stop().animate({
                         scrollTop : filterOffsetTop
                     }, this.opts.duration, $.proxy(function () {
+                        // 이동 시킨 후에 filterMoToggleFunc() 함수를 실행 한다 
                         this.filterMoToggleFunc();
+                        // 0.1초마다 반복한다 
                         win.setTimeout($.proxy(function () {
+                            // window에 clickoutside 이벤트를 붙여준다 
                             this.bindOutsideEvents(true);
                         }, this), 10);
                     }, this))
                 } else {
+                    // filterArea가 is-fixed 클래스를 가지고 있으면 바로 filterMoToggleFunc()를 실행시킨다 
                     this.filterMoToggleFunc();
                 }
             }
         },
         filterMoToggleFunc : function () {
             this.filterArea.addClass(this.opts.filterToggleClass);
+            // 0.01초마다 반복 
             win.setTimeout($.proxy(function () {
+                //scrollLock의 init 메서드 init(true) 호출 
                 this.scrollLock.init.call(this, true);
+                //filterLayerArea에 clickoutside 이벤트를 붙여준다
                 this.bindOutsideEvents(true);
             }, this), 10);
             this.layerViewType = (this.filterArea.hasClass(this.opts.filterToggleClass)) ? true : false;
@@ -551,12 +579,14 @@
         },
         onLayerOutsideFunc : function (e) {
             e.preventDefault();
+            // 0.01초마다 반복 
             win.setTimeout($.proxy(function () {
                 this.opts.filterViewType = false;
                 this.layerViewType = false;
                 this.filterArea.removeClass(this.opts.filterToggleClass);
                 this.filterMoToggler.attr(this.opts.accessData.accessAria, this.layerViewType);
                 this.scrollLock.init.call(this, false);
+                // filterLayerArea에서 clickoutside 이벤트 해제
                 this.bindOutsideEvents(false);
                 this.moFocusInitLayout(false);
                 this.moFocusBindEvents(false);
@@ -565,7 +595,9 @@
         },
         filterToggleFunc : function (e) {
             e.preventDefault();
+            // filterViewFunc(e) 함수 실행 event 전달 (e: filterToggler)
             this.filterViewFunc(e);
+            //접근성(global text추가하는 함수) accessbilityFunct실행
             this.accessbilityFunc(true);
         },
         filterViewFunc : function (e) {
@@ -585,6 +617,7 @@
             }
         },
         filterViewAfterFunc : function () {
+            // 구버전 브라우저(모든 사이즈)이거나 최신 브라우저 PC버전 일때 outCallback('loadAfter')함수를 실행한다 
             if (!UTIL.isSupportTransform || (UTIL.isSupportTransform && this.winWidth > BREAKPOINTS.MOBILE)) {
                 this.outCallback('loadAfter');
             }
@@ -648,7 +681,9 @@
             this.accessbilityFunc(false);
         },
         listAjaxAfter : function () {
+            //listchild -> filter의 li 
             this.listChild = this.listParent.children();
+            //listNum -> filter의 li 개수 
             this.listNum = this.listParent.children().length;
             // initListView() 실행
             this.initListView();
