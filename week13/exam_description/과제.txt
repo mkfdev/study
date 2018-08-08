@@ -1,0 +1,15 @@
+.인터렉션 : 
+1) hover 시 레이어 토글 (맨 우측의 priter software는 오버시 인터렉션 없음) / 레이어에서 버튼 선택시 x버튼 활성화 토글
+2) input 포커스시 label 숨김/셀렉트박스?
+3) 아코디언/체크박스?
+4) 갯수 제한 이상 데이터가 있을 때 show more 버튼 노출, 버튼 클릭시 모든 리스트 노출 및 show more 버튼 텍스트 변경 (제한 갯수는 다양할 수 있음)
+5) 모바일에서 3번영역 sticky로 인터렉션 변경, 해당 영역에 있을때만 sticky이고 벗어나면 sticky off
+6) 같은 UI가 반복되므로, 각각 플러그인으로 짜두고 호출하는 방식이 효율적
+7) [보너스] data-global-text 변경 / 각 인터렉션 발생에 해당하는 aria 요소 제어
+.제출기한 : 8/21(화) 정오
+
+.제출방법 : git에 업로드 후 메일로 URL 제출??
+
+.참고 url : /apps/samsungp5/components/global/content/support/product/manual-download-filter-new/manual-download-filter-new.html
+
+?
