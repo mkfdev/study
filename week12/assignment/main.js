@@ -881,11 +881,17 @@
             }
         },
         onChangeFunc : function () {
+            // chekckbox:checked 상태가 있으면 
             if (this.objInput.filter(':checked').length) {
+                //Clear All버튼에서 is-disabled 클래스 제거
                 this.objResetBtn.removeClass(this.opts.disabledClass);
+                //Clear All버튼의 disabled 속성은 false
                 this.objResetBtn.prop('disabled', false);
             } else {
+                //checkbox 비활성화
+                // Clear All 버튼에서 is-disabled 클래스 추가
                 this.objResetBtn.addClass(this.opts.disabledClass);
+                //Clear All버튼의 disabled 속성은 true (태그에 disabled 속성이 추가되고 disabled 상태가 됨)
                 this.objResetBtn.prop('disabled', true);
             }
         },
