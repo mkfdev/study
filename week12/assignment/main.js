@@ -299,10 +299,14 @@
             this.filterArea.find('a, input, button, select').filter(':visible').first().focus();
         },
         resizeFunc : function () {
+            // winWidth = 현재 window사이즈
             this.winWidth = UTIL.winSize().w;
+
+            // resizeStart 초기값은 null
             if (this.opts.resizeStart == null) {
+                //resizeStart에 현재 window 스크린 사이즈를 대입 
                 this.opts.resizeStart = this.winWidth;
-                // 이해 안가는 부분
+                // resizeAnmateFunc 함수 실행 
                 this.resizeAnimateFunc();
             }
             win.clearTimeout(this.resizeEndTime);
@@ -322,10 +326,14 @@
         },
         //resizeAnimateFunc
         resizeAnimateFunc : function () {
+            // setLayout() 함수 실행
+            // 스크린사이즈에 따른 모바일, PC 버전 체크 후 setLayout 진행
             this.setLayout();
+            // 모바일 사이즈일때 
             if (UTIL.winSize().w <= BREAKPOINTS.MOBILE) {
                 this.createHeightFunc();
                 this.fixedObjFunc();
+                // setFilterRange 함수 실행 - lockScroll 속성 정의
                 this.setFilterRange();
             }
             this.resizeRequestFrame = UTIL.requestAFrame.call(win, $.proxy(this.resizeAnimateFunc, this));
@@ -341,8 +349,9 @@
             } else {
                 if (this.opts.viewType != 'mo') {
                     this.opts.viewType = 'mo';
+                    // setMoLayout 함수 실행 - 모바일 버전 초기화(불필요한 이벤트를 제거)
                     this.setMoLayout();
-                    // 보류(이해안가는 부분 있음)
+                    //bindResponsiveEvents 함수 실행 (type = false)
                     this.bindResponsiveEvents(false);
                 }
             }
@@ -465,6 +474,7 @@
                 if (this.filterArea.hasClass(this.opts.filterFixedClass)) {
                     this.filterArea.css('top', this.filterObjPosition);
                 } else {
+                // 아니면 filterArea의 top값은 0
                     this.filterArea.css('top', '');
                 }
             }
@@ -611,17 +621,22 @@
             this.accessbilityFunc(true);
         },
         filterViewFunc : function (e) {
-            var target = $(e.currentTarget);
-            var targetList = target.parent(this.opts.filterWrap),
-            targetListWrap = targetList.find(this.opts.filterListWrap);
-            if (!targetList.hasClass(this.opts.filterActiveClass)) {
-                targetList.toggleClass(this.opts.filterActiveClass);
-                targetListWrap.slideToggle(this.opts.filterToggleSpeed, $.proxy(function () {
+            var target = $(e.currentTarget); //$('.manual-download-filter-new__list-title')
+            var targetList = target.parent(this.opts.filterWrap), //target의 부모 요소인 .manual-download-filter-new__list
+            targetListWrap = targetList.find(this.opts.filterListWrap); //listWrap 영역에서 manual-download-filter-new__list-items(list)요소를 가져온다 
+            if (!targetList.hasClass(this.opts.filterActiveClass)) { // manual-download-filter-new__list에 filter-active 클래스를 가지고 있지 않으면
+                targetList.toggleClass(this.opts.filterActiveClass); // manual-download-filter-new__list에 filter-active 클래스를 추가한다 
+                targetListWrap.slideToggle(this.opts.filterToggleSpeed, $.proxy(function () { //manual-download-filter-new__list-items(list) 슬라이드 토글(hide되거나 show된다)
+                    //filterViewAfterFunc 함수 실행
                     this.filterViewAfterFunc();
                 }, this));
             } else {
+                // 이미 .manual-download-filter-new__list가 filter-active 클래스를  가지고 있으면 else 실행
+                // manual-download-filter-new__list-items(list wrap)요소가 slideUp으로 닫힌다 
                 targetListWrap.slideUp(this.opts.filterToggleSpeed, $.proxy(function () {
+                    //.manual-download-filter-new__list (target 부모 요소)에서 filter-active클래스를 제거한다 
                     targetList.removeClass(this.opts.filterActiveClass);
+                    // filterViewAfterFunc 함수를 실행한다 
                     this.filterViewAfterFunc();
                 }, this));
             }
@@ -699,9 +714,14 @@
             this.initListView();
         },
         setListLayout : function () {
+            // this.currentAllView가 true 이면 
             if (this.currentAllView) {
+                // filter의 li에 is-show 클래스를 추가한다 
                 this.listChild.addClass(this.opts.listViewClass);
             } else {
+                // this.currentAllView가 false 이면 
+                // (t)his.listWrap의 data-view-list 속성에서 가져온 숫자 - 1) 번째의  li에 is-show클래스를 추가한다. 
+                // nextAll() 해당하는 요소 다음으로 오는 모든 요소들에 is-show 클래스를 제거한다  
                 this.listChild.eq(this.listViewNum - 1).addClass(this.opts.listViewClass).nextAll().removeClass(this.opts.listViewClass);
             }
             this.outCallback('loadAfter');
@@ -736,6 +756,7 @@
             callbackObj();
         },
         reInit : function () {
+            //resizeFunc 실행 
             this.resizeFunc();
         }
     };
@@ -764,9 +785,13 @@
     };
     win.smg.support[personaPluginName].prototype = {
         init : function () {
+            // PC 사이즈 일때 
             if (UTIL.winSize().w > BREAKPOINTS.MOBILE) {
+                //setElements 함수 실행
                 this.setElements();
+                //initLayout 함수 실행 - checkbox 상태 값 체크 후 속성 추가 
                 this.initLayout();
+                //resizeFunc 함수 실행 
                 this.resizeFunc();
                 this.bindEvents();
             }
@@ -836,6 +861,7 @@
             UTIL.cancelAFrame.call(win, this.resizeRequestFrame);
         },
         resizeAnimateFunc : function () {
+            // resizeControl 함수 실행 pc, mo 스크린 크기에 따른 resize 메서드 호출
             this.resizeControl();
             // 해석 안되는 부분 : requestAFrame이 win에서 resizeAnimateFunc메서드를 호출. -> resizeControl 호출 
             this.resizeRequestFrame = UTIL.requestAFrame.call(win, $.proxy(this.resizeAnimateFunc, this));
