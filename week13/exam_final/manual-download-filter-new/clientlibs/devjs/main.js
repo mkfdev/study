@@ -267,6 +267,14 @@
             contentArea : '.manual-download-filter-new__content',
             contentListWrap : '.manual-download-filter-new__content-list',
             contentList : '> ul li',
+            filterListWrap: '.manual-download-filter-new__list',
+            filterActiveClass :'filter-active',
+            filterListButton : '.manual-download-filter-new__list-title',
+            filterList : '.manual-download-filter-new__list-items',
+            filterListTabWrap : '.manual-download-filter-new__filters',
+            filterListTab: '.manual-download-filter-new__tab',
+            filterAllListWrap: '.manual-download-filter-new__list-wrap',
+            isFixedClass : 'is-fixed',
             isShowClass : 'is-show',
             viewType : null
         };
@@ -281,22 +289,34 @@
             this.initOpts();
             this.initLayers();
             //this.setLayers();
-            //this.bindEvents();
+            this.bindEvents();
         },
         setElements : function(){
             this.contentArea = this.obj.find(this.opts.contentArea);
             this.contentListWrap = this.contentArea.find(this.opts.contentListWrap);
             this.contentList = this.contentListWrap.find(this.opts.contentList);
+            this.filterListWrap = this.obj.find(this.opts.filterListWrap);
+            this.fliterListButton = this.filterListWrap.find(this.opts.filterListButton);
+            this.filterList = this.filterListWrap.find(this.opts.filterList);
+            this.filterListTabWrap = this.obj.find(this.opts.filterListTabWrap);
+            this.filterListTab = this.filterListTabWrap.find(this.opts.filterListTab);
+            this.filterAllListWrap = this.filterListTabWrap.find(this.opts.filterAllListWrap);
             this.viewType = this.obj.find(this.opts.viewType);
         },
         initOpts : function(){
             this.viewListNum = this.contentListWrap.data('viewList');
             this.listNum = this.contentList.length;
-            console.log(this.listNum);
+            console.log(this.listNum);           
         },
         initLayers : function(){
             // remove
             this.contentList.addClass(this.opts.isShowClass);
+            this.filterList.show();
+
+            //js-
+            var className = this.filterListTabWrap.attr('class').split(' ');
+            var fixedHeight = this.filterListTabWrap.height();
+            this.filterListTabWrap.wrap("<div class='js-" + className[0] + "' style='height:" + fixedHeight + "px'></div>");
         },
         setLayers : function(){
             // IE9미만 또는 최신 브라우저 PC버전 
@@ -316,7 +336,43 @@
 
         },
         bindEvents : function(){
+            this.fliterListButton.on('click', $.proxy(this.filterListToggle, this));
+            this.filterListTab.on('click', $.proxy(this.filetrManualListToggle, this));
+        },
+        filterListToggle : function(e) {
+            e.preventDefault();
+            
+            var target = $(e.currentTarget);
+            target.next(this.opts.filterList).slideToggle('fast');
 
+            if(target.parent().hasClass(this.opts.filterActiveClass)){
+                target.parents().removeClass(this.opts.filterActiveClass);
+            }else {
+                target.parent().addClass(this.opts.filterActiveClass);
+            }
+        },
+        filetrManualListToggle : function(e) {
+            e.preventDefault();
+            this.targetBtn = $(e.currentTarget);
+            this.targetBtn.next().slideToggle();
+
+            this.targetBtn.parents(this.opts.filterListTabWrap).toggleClass(this.opts.isFixedClass).css('top', '0');
+
+
+            if (this.targetBtn.parents(this.opts.filterListTabWrap).hasClass(this.opts.isFixedClass)){
+                this.filterFixedFunc(this.targetBtn);
+            }else {
+                return;
+            }
+            
+           
+        },
+        filterFixedFunc : function(target) {
+            var targetScroll = target.parents(this.opts.obj).offset().top;
+            console.log(targetScroll);
+            $('body,html').animate({
+                "scrollTop": targetScroll
+            }, 300);
         }
     };
 
