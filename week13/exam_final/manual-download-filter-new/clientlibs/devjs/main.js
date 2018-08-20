@@ -69,23 +69,6 @@
                     _this.opts.filterModulePlugins.push(new win.smg.support[filterModulePluginName](target));
                 })(i);
             }
-        },
-        loadAfterFunc : function () {
-            this.outCallback('loadAfter');
-        },
-        outCallback : function (ing) {
-            var callbackObj = this.opts[ing];
-            if (callbackObj == null) return;
-            callbackObj();
-        },
-        reInit : function () {
-            var _this = this;
-            for (var i = 0, max = this.opts.filterModulePlugins.length; i < max; i++) {
-                (function (index) {
-                    var target = _this.opts.filterModulePlugins[i];
-                    target.reInit();
-                })(i);
-            }
         }
     };
 
@@ -267,6 +250,8 @@
             contentArea : '.manual-download-filter-new__content',
             contentListWrap : '.manual-download-filter-new__content-list',
             contentList : '> ul li',
+            contentListBtnWrap : '.manual-download-filter-new__content-cta',
+            contentListInnerBtn : '.s-btn-text',
             filterListWrap: '.manual-download-filter-new__list',
             filterActiveClass :'filter-active',
             filterListButton : '.manual-download-filter-new__list-title',
@@ -276,6 +261,8 @@
             filterAllListWrap: '.manual-download-filter-new__list-wrap',
             isFixedClass : 'is-fixed',
             isShowClass : 'is-show',
+            isArrowDown : 's-ico-down',
+            isArrowUp : 's-ico-up',     
             viewType : null
         };
         this.opts = UTIL.def(defParams, (args || {}));
@@ -295,6 +282,8 @@
             this.contentArea = this.obj.find(this.opts.contentArea);
             this.contentListWrap = this.contentArea.find(this.opts.contentListWrap);
             this.contentList = this.contentListWrap.find(this.opts.contentList);
+            this.contentListBtn = this.contentListWrap.find(this.opts.contentListBtnWrap);
+            this.contentListMoreBtn = this.contentListBtn.find(this.opts.contentListInnerBtn);
             this.filterListWrap = this.obj.find(this.opts.filterListWrap);
             this.fliterListButton = this.filterListWrap.find(this.opts.filterListButton);
             this.filterList = this.filterListWrap.find(this.opts.filterList);
@@ -305,18 +294,36 @@
         },
         initOpts : function(){
             this.viewListNum = this.contentListWrap.data('viewList');
-            this.listNum = this.contentList.length;
-            console.log(this.listNum);           
+            this.listNum = this.contentList.length;    
         },
         initLayers : function(){
             // remove
             this.contentList.addClass(this.opts.isShowClass);
             this.filterList.show();
-
-            //js-
-            var className = this.filterListTabWrap.attr('class').split(' ');
+            this.initFilterArea();
+            this.initContentList();   
+        },
+        initFilterArea : function(){
+            var filterWrapClass = this.filterListTabWrap.attr('class');
             var fixedHeight = this.filterListTabWrap.height();
-            this.filterListTabWrap.wrap("<div class='js-" + className[0] + "' style='height:" + fixedHeight + "px'></div>");
+            this.filterListTabWrap.wrap("<div class='js-" + filterWrapClass + "' style='height:" + fixedHeight + "px'></div>");
+        },
+        initContentList : function(){
+            this.showAllList = false;
+            if(this.listNum <= this.viewListNum){
+                this.contentListBtn.hide();
+            }else {
+                this.contentListBtn.show();
+            }
+
+            for(var i=0; i<this.listNum; i++){
+                var listChild = this.contentList.eq(i);
+                if(i < this.viewListNum){
+                    listChild.addClass(this.opts.isShowClass);
+                }else {
+                    listChild.removeClass(this.opts.isShowClass);
+                }
+            }
         },
         setLayers : function(){
             // IE9미만 또는 최신 브라우저 PC버전 
@@ -338,10 +345,10 @@
         bindEvents : function(){
             this.fliterListButton.on('click', $.proxy(this.filterListToggle, this));
             this.filterListTab.on('click', $.proxy(this.filetrManualListToggle, this));
+            this.contentListMoreBtn.on('click', $.proxy(this.moreViewbtnToggle, this));
         },
         filterListToggle : function(e) {
-            e.preventDefault();
-            
+            e.preventDefault();            
             var target = $(e.currentTarget);
             target.next(this.opts.filterList).slideToggle('fast');
 
@@ -354,25 +361,62 @@
         filetrManualListToggle : function(e) {
             e.preventDefault();
             this.targetBtn = $(e.currentTarget);
+
+            this.stickyFunc();
             this.targetBtn.next().slideToggle();
-
-            this.targetBtn.parents(this.opts.filterListTabWrap).toggleClass(this.opts.isFixedClass).css('top', '0');
-
-
+            //this.targetBtn.parents(this.opts.filterListTabWrap).toggleClass(this.opts.isFixedClass).css('top', '0');
             if (this.targetBtn.parents(this.opts.filterListTabWrap).hasClass(this.opts.isFixedClass)){
                 this.filterFixedFunc(this.targetBtn);
             }else {
                 return;
+            }           
+        },
+        stickyFunc : function(){
+            var _scrollTop = $(win).scrollTop(),
+                filterTop = this.filterListTabWrap.offset().top;
+            console.log(_scrollTop);
+            console.log(filterTop);
+
+            $('body, html').animate({
+                'scrollTop' : filterTop
+            },350);
+
+            if(_scrollTop < filterTop){
+                this.filterListTabWrap.addClass(this.opts.isFixedClass).css('top', 0);
+            }else {
+                 this.filterListTabWrap.removeClass(this.opts.isFixedClass);
             }
-            
-           
         },
         filterFixedFunc : function(target) {
-            var targetScroll = target.parents(this.opts.obj).offset().top;
-            console.log(targetScroll);
-            $('body,html').animate({
-                "scrollTop": targetScroll
-            }, 300);
+           // var targetScroll = target.parents(this.opts.obj).offset().top;
+            //console.log(targetScroll);
+            //$('body,html').animate({
+               // "scrollTop": targetScroll
+            //}, 300);
+        },
+        moreViewbtnToggle : function(e){
+            e.preventDefault();
+            this.showAllList = !this.showAllList;
+            this.toggleArrow(this.showAllList);
+            this.resetListLayout();
+            this.scrollMovePos();
+        },
+        toggleArrow : function(check){
+            this.contentListMoreBtn.toggleClass(this.opts.isArrowUp, check);  
+            this.contentListMoreBtn.toggleClass(this.opts.isArrowDown, !check);  
+        },
+        resetListLayout : function(){
+            if(this.showAllList){
+                this.contentList.addClass(this.opts.isShowClass);
+            }else {
+                this.contentList.eq(this.viewListNum-1).addClass(this.opts.isShowClass).nextAll().removeClass(this.opts.isShowClass);
+            }
+        },
+        scrollMovePos : function(){
+            var boxScrolltop = this.contentListWrap.offset().top;
+            $('html, body').animate({
+                'scrollTop' : boxScrolltop
+            }, 350);
         }
     };
 
