@@ -275,7 +275,7 @@
             this.setElements();
             this.initOpts();
             this.initLayers();
-            //this.setLayers();
+            this.setLayers();
             this.bindEvents();
         },
         setElements : function(){
@@ -305,9 +305,7 @@
         },
         initFilterArea : function(){
             var filterWrapClass = this.filterListTabWrap.attr('class');
-            var fixedHeight = this.filterListTabWrap.height();
-            console.log(fixedHeight);
-            this.filterListTabWrap.wrap("<div class='js-" + filterWrapClass + "' style='height:" + fixedHeight + "px'></div>");
+            this.filterListTabWrap.wrap("<div class='js-"+filterWrapClass+"'></div>");
             this.filterJsWrap = this.filterListTabWrap.parent();
         },
         initContentList : function(){
@@ -346,6 +344,10 @@
             this.filterListTabWrap.show().css('top', '');
             this.filterListTabWrap.removeClass(this.opts.isFixedClass);    
         },
+        setMoLayout : function(){
+            var fixedHeight = this.filterListTabWrap.height();
+            this.filterJsWrap.css('height', fixedHeight);
+        },
         bindEvents : function(){
             $(win).on('resize', $.proxy(this.resizeFunc, this));
             this.fliterListButton.on('click', $.proxy(this.filterListToggle, this));
@@ -368,6 +370,7 @@
             } else {
                 if (this.opts.viewType !== 'mo') {
                     this.opts.viewType = 'mo';
+                    this.setMoLayout();
                 }
             }
         },
