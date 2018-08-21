@@ -355,9 +355,9 @@
             this.contentListMoreBtn.on('click', $.proxy(this.moreViewbtnToggle, this));
         },
         resizeFunc : function(){
-            this.resizeEventFunc();
+            //this.resizeEventFunc();
             win.clearTimeout(this.resizeTime);
-            this.resizeTime = win.setTimeout($.proxy(this.resizeFunc, this), 150);
+            this.resizeTime = win.setTimeout($.proxy(this.resizeEventFunc, this), 150);
         },
         resizeEventFunc : function(){
             this.winWidth = UTIL.winSize().w;
@@ -365,7 +365,6 @@
                 if (this.opts.viewType !== 'pc') {
                     this.opts.viewType = 'pc';
                     this.setPcLayout();
-                    this.fliterListButton.on('click', $.proxy(this.filterListToggle, this));
                 }
             } else {
                 if (this.opts.viewType !== 'mo') {
@@ -400,20 +399,7 @@
             this.targetBtn = $(e.currentTarget);
 
             this.stickyFunc();
-            this.targetBtn.next().slideToggle();
-            //this.targetBtn.parents(this.opts.filterListTabWrap).toggleClass(this.opts.isFixedClass).css('top', '0');
-            if (this.targetBtn.parents(this.opts.filterListTabWrap).hasClass(this.opts.isFixedClass)){
-                this.filterFixedFunc(this.targetBtn);
-            }else {
-                return;
-            }           
-        },
-        filterFixedFunc: function (target) {
-            // var targetScroll = target.parents(this.opts.obj).offset().top;
-            //console.log(targetScroll);
-            //$('body,html').animate({
-            // "scrollTop": targetScroll
-            //}, 300);
+            this.targetBtn.next().slideToggle();          
         },
         stickyFunc : function(){
             var _scrollTop = $(win).scrollTop(),
