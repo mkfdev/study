@@ -162,7 +162,8 @@
             selectLayerList : '> ul li',
             selectLayerSortWrap : '.js-align-placeholder',
             selectSortName : '>span',
-            openedClass : 'is-opened'
+            openedClass : 'is-opened',
+            blindText : '.blind'
         };
         this.opts = UTIL.def(defParams, (args || {}));
         if(!(this.obj = $(this.opts.obj)).length) return;
@@ -209,10 +210,23 @@
                 targetParent.removeClass(this.opts.openedClass);
                 target.next(this.opts.selectLayer).slideUp('fast').attr('aria-hidden', 'false');
                 this.bindOutsideEvents(false);
+                this.selectAccessibility();
             }else{
                 targetParent.addClass(this.opts.openedClass);
                 target.next(this.opts.selectLayer).slideDown('fast').attr('aria-hidden','true');
                 this.bindOutsideEvents(true);
+                this.selectAccessibility();
+            }            
+        },
+        selectAccessibility : function(){
+            var check = this.selectWrap.hasClass(this.opts.openedClass);
+            console.log(check);
+            if(check){
+                this.selectWrap.attr('data-global-text', this.selectWrap.data('global-text').Expand);
+                this.selectWrap.find(this.opts.blindText).text(this.selectWrap.data('global-text').Expand);
+            }else{
+                this.selectWrap.attr('data-global-text', this.selectWrap.data('global-text').Collapse);
+                this.selectWrap.find(this.opts.blindText).text(this.selectWrap.data('global-text').Collapse);
             }
         },
         bindOutsideEvents : function(type){
@@ -226,6 +240,7 @@
             this.selectWrap.removeClass(this.opts.openedClass);
             this.selectLayer.slideUp('fast').attr('aria-hidden', 'false');
             this.selectWrap.off('clickoutside touchendoutside');
+            this.selectAccessibility();
         },
         selectItemFunc : function(e){
             e.preventDefault();
@@ -247,23 +262,29 @@
     win.smg.support[filterModulePluginName] = function(container, args){
         var defParams = {
             obj : container,
-            contentArea : '.manual-download-filter-new__content',
-            contentListWrap : '.manual-download-filter-new__content-list',
-            contentList : '> ul li',
-            contentListBtnWrap : '.manual-download-filter-new__content-cta',
-            contentListInnerBtn : '.s-btn-text',
-            filterListWrap: '.manual-download-filter-new__list',
-            filterActiveClass :'filter-active',
-            filterListButton : '.manual-download-filter-new__list-title',
-            filterList : '.manual-download-filter-new__list-items',
-            filterListTabWrap : '.manual-download-filter-new__filters',
-            filterListTab: '.manual-download-filter-new__tab',
-            filterAllListWrap: '.manual-download-filter-new__list-wrap',
-            isFixedClass : 'is-fixed',
-            isShowClass : 'is-show',
-            isArrowDown : 's-ico-down',
-            isArrowUp : 's-ico-up',     
-            viewType : null
+            viewType : null,
+            filtersWrap : '.manual-download-filter-new__filters',
+            filtersInnerListWrap : '.manual-download-filter-new__list-wrap',
+            filtersInnerList : '.manual-download-filter-new__list',
+            filtersListInnerOpener : '.manual-download-filter-new__list-title',
+            filtersListArea : '.manual-download-filter-new__list-items',
+            filtersActive : 'filter-active',
+            jsCheckboxWrap: '.js-chkbox-wrap',
+            inpCheckbox : '.support-checkbox__input',
+            isChecked : 'is-checked',
+            isDisabled : 'is-disabled',
+            filtersTab: '.manual-download-filter-new__tab',
+            filtersTabBtn : '.manual-download-filter-new__tab-btn',
+            isFixed : 'is-fixed',
+            isOpened : 'is-opened',
+            filtersContent : '.manual-download-filter-new__content',
+            filtersContentListWrap : '.manual-download-filter-new__content-list',
+            filtersContentList : '> ul li',
+            isShow : 'is-show',
+            showMoreBtnWrap : '.manual-download-filter-new__content-cta',
+            showMoreBtn : '.s-btn-text',
+            iconUp : 's-ico-up',
+            iconDown : 's-ico-down'
         };
         this.opts = UTIL.def(defParams, (args || {}));
         if(!(this.obj = $(this.opts.obj)).length) return;
@@ -273,173 +294,144 @@
     win.smg.support[filterModulePluginName].prototype = {
         init : function(){
             this.setElements();
-            this.initOpts();
+            //pc,mo공통
             this.initLayers();
-            this.setLayers();
+            //pc,mo 각각
+            this.initScreen();            
             this.bindEvents();
         },
         setElements : function(){
-            this.contentArea = this.obj.find(this.opts.contentArea);
-            this.contentListWrap = this.contentArea.find(this.opts.contentListWrap);
-            this.contentList = this.contentListWrap.find(this.opts.contentList);
-            this.contentListBtn = this.contentListWrap.find(this.opts.contentListBtnWrap);
-            this.contentListMoreBtn = this.contentListBtn.find(this.opts.contentListInnerBtn);
-            this.filterListWrap = this.obj.find(this.opts.filterListWrap);
-            this.fliterListButton = this.filterListWrap.find(this.opts.filterListButton);
-            this.filterList = this.filterListWrap.find(this.opts.filterList);
-            this.filterListTabWrap = this.obj.find(this.opts.filterListTabWrap);
-            this.filterListTab = this.filterListTabWrap.find(this.opts.filterListTab);
-            this.filterAllListWrap = this.filterListTabWrap.find(this.opts.filterAllListWrap);
-            this.viewType = this.obj.find(this.opts.viewType);
-        },
-        initOpts : function(){
-            this.viewListNum = this.contentListWrap.data('viewList');
-            this.listNum = this.contentList.length;    
+            this.filters = this.obj.find(this.opts.filtersWrap);
+            this.filtersInnerList = this.filters.find(this.opts.filtersInnerList);
+            this.filtersListToggler = this.filtersInnerList.find(this.opts.filtersListInnerOpener);
+            this.filtersList = this.filtersInnerList.find(this.opts.filtersListArea);
+            this.jsCheckboxWrap = this.obj.find(this.opts.jsCheckboxWrap);
+            this.filtersTab = this.filters.find(this.opts.filtersTab);
+            this.filtersTabBtn = this.filters.find(this.opts.filtersTabBtn);
+            this.filtersInnerListWrap = this.filters.find(this.opts.filtersInnerListWrap);
+            this.filtersContent = this.obj.find(this.opts.filtersContent);
+            this.filtersContentListWrap = this.filtersContent.find(this.opts.filtersContentListWrap);
+            this.filtersContentList = this.filtersContentListWrap.find(this.opts.filtersContentList);
+            this.showMoreBtnWrap = this.filtersContentListWrap.find(this.opts.showMoreBtnWrap);
+            this.showMoreBtn = this.showMoreBtnWrap.find(this.opts.showMoreBtn);
         },
         initLayers : function(){
-            // remove
-            this.contentList.addClass(this.opts.isShowClass);
-            this.filterList.show();
-            this.initFilterArea();
-            this.initContentList();   
+            //js wrap
+            this.initFilterWrapper();
+            //view more
+            this.initViewMoreArea();
         },
-        initFilterArea : function(){
-            var filterWrapClass = this.filterListTabWrap.attr('class');
-            this.filterListTabWrap.wrap("<div class='js-"+filterWrapClass+"'></div>");
-            this.filterJsWrap = this.filterListTabWrap.parent();
+        initFilterWrapper : function(){
+            var filtersClass = this.filters.attr('class');
+            this.jsFiltersWrap = this.filters.wrap("<div class='js-"+ filtersClass + "'></div>").parent();
         },
-        initContentList : function(){
-            this.showAllList = false;
-            if(this.listNum <= this.viewListNum){
-                this.contentListBtn.hide();
-            }else {
-                this.contentListBtn.show();
-            }
-
-            for(var i=0; i<this.listNum; i++){
-                var listChild = this.contentList.eq(i);
-                if(i < this.viewListNum){
-                    listChild.addClass(this.opts.isShowClass);
-                }else {
-                    listChild.removeClass(this.opts.isShowClass);
+        initViewMoreArea : function(){
+            this.listNum = this.filtersContentListWrap.find(this.opts.filtersContentList).length;
+            this.viewListNum = this.filtersContentListWrap.data('viewList');
+            this.initViewMoreFunc();
+        },
+        initViewMoreFunc : function(){
+             for(var i=0; i<this.viewListNum; i++){
+                    this.filtersContentList.eq(i).addClass(this.opts.isShow);
                 }
+
+            if(this.listNum > this.viewListNum){
+                this.showMoreBtnWrap.show();
+            }else{
+                this.showMoreBtnWrap.hide();
             }
         },
-        setLayers : function(){
-            // IE9미만 또는 최신 브라우저 PC버전 
+        initScreen : function(){
+            if(UTIL.winSize().w > BREAKPOINTS.MOBILE){
+                //reset시에 jsWrap을 제거
+                this.noFixFilterWrapper();
+            }else {
+                //jsWrap 추가 (height)
+                this.fixFilterWrapper();
+            }
+        },
+        noFixFilterWrapper : function(){
+           this.jsFiltersWrap.css('height', '');
+        },        
+        fixFilterWrapper : function(){
+            this.jsFiltersWrap.css('height', this.filters.outerHeight());
+        },
+        bindEvents : function(){
+            $(win).on('resize', $.proxy(this.resizeLayers, this));
+            this.filtersListToggler.on('click', $.proxy(this.filtersInnerListToggle, this));
+            this.jsCheckboxWrap.on('click', $.proxy(this.changeCheckboxStatus, this));
+            this.filtersTabBtn.on('click', $.proxy(this.filterOuterToggle, this));
+            this.showMoreBtn.on('click', $.proxy(this.viewMoreToggle, this));
+        },
+        resizeLayers : function(){
             if(!UTIL.isSupportTransform || UTIL.isSupportTransform && UTIL.winSize().w > BREAKPOINTS.MOBILE){
                 if(this.viewType != 'pc'){
                     this.viewType = 'pc';
-                    this.setPcLayout();
+                    console.log('pc');
+                    //filters를 감싸는 js-filters 요소의 height를 제거
+                    this.noFixFilterWrapper();
                 }
             }else{
                 if(this.viewType != 'mo'){
                     this.viewType = 'mo';
-                    this.setMoLayout();
+                    console.log('mo');
+                    this.fixFilterWrapper();
                 }
             }
         },
-        setPcLayout : function(){
-            this.filterJsWrap.css('height','');
-            this.filterListTabWrap.show().css('top', '');
-            this.filterListTabWrap.removeClass(this.opts.isFixedClass);    
+        filtersInnerListToggle : function(e){
+            e.preventDefault();
+            var target = $(e.currentTarget),
+                hasActive = target.parent().hasClass(this.opts.filtersActive),
+                filtersListElement = target.next();
+            
+            target.parent().toggleClass(this.opts.filtersActive);
+            hasActive ? filtersListElement.slideUp('fast') : filtersListElement.slideDown('fast');
         },
-        setMoLayout : function(){
-            var fixedHeight = this.filterListTabWrap.height();
-            this.filterJsWrap.css('height', fixedHeight);
-        },
-        bindEvents : function(){
-            $(win).on('resize', $.proxy(this.resizeFunc, this));
-            this.fliterListButton.on('click', $.proxy(this.filterListToggle, this));
-            this.filterListTab.on('click', $.proxy(this.filetrManualListToggle, this));
-            this.contentListMoreBtn.on('click', $.proxy(this.moreViewbtnToggle, this));
-        },
-        resizeFunc : function(){
-            //this.resizeEventFunc();
-            win.clearTimeout(this.resizeTime);
-            this.resizeTime = win.setTimeout($.proxy(this.resizeEventFunc, this), 150);
-        },
-        resizeEventFunc : function(){
-            this.winWidth = UTIL.winSize().w;
-            if (!UTIL.isSupportTransform || UTIL.isSupportTransform && (this.winWidth > BREAKPOINTS.MOBILE)) {
-                if (this.opts.viewType !== 'pc') {
-                    this.opts.viewType = 'pc';
-                    this.setPcLayout();
-                }
-            } else {
-                if (this.opts.viewType !== 'mo') {
-                    this.opts.viewType = 'mo';
-                    this.setMoLayout();
-                }
-            }
-        },
-        scrollMoveFixedFunc : function(){
-            var _scrollTop = $(win).scrollTop(),
-                filterTop = this.filterListTabWrap.offset().top;
-
-            if(filterTop < _scrollTop){
-                this.filterListTabWrap.addClass(this.opts.isFixedClass);
-            }else{
-                this.filterListTabWrap.removeClass(this.opts.isFixedClass);
-            }
-        },
-        filterListToggle : function(e) {
-            e.preventDefault();            
+        changeCheckboxStatus : function(e){
             var target = $(e.currentTarget);
-            target.next(this.opts.filterList).slideToggle('fast');
-
-            if(target.parent().hasClass(this.opts.filterActiveClass)){
-                target.parents().removeClass(this.opts.filterActiveClass);
-            }else {
-                target.parent().addClass(this.opts.filterActiveClass);
+            if(target.hasClass(this.opts.isDisabled)){
+                return;
+            }else{
+                var checked = target.find(this.opts.inpCheckbox).prop('checked');
+                target.toggleClass(this.opts.isChecked, !checked);               
+                target.find(this.opts.inpCheckbox).prop('checked', !checked);
             }
         },
-        filetrManualListToggle : function(e) {
+        filterOuterToggle : function(e){
             e.preventDefault();
-            this.targetBtn = $(e.currentTarget);
+            var target = $(e.currentTarget);
 
-            this.stickyFunc();
-            this.targetBtn.next().slideToggle();          
-        },
-        stickyFunc : function(){
-            var _scrollTop = $(win).scrollTop(),
-                filterTop = this.filterListTabWrap.offset().top;
-            $('body, html').animate({
-                'scrollTop' : filterTop
-            },350);
+            this.scrollMoveFunc(target);
 
-            if(!this.filterListTabWrap.hasClass(this.opts.isFixedClass)){
-                this.filterListTabWrap.addClass(this.opts.isFixedClass).css('top', 0);
-                $('body').css('overflow', 'hidden');
-            }else {
-                this.filterListTabWrap.removeClass(this.opts.isFixedClass);
-                $('body').css('overflow', 'auto');
+            if(this.filtersTab){
+                target.parents(this.opts.filtersWrap).toggleClass(this.opts.isFixed).toggleClass(this.opts.isOpened);
+                $('.'+this.opts.isOpened).css('top', '0');
             }
 
+            var expended = target.parents(this.opts.filtersWrap).hasClass(this.opts.isOpened);
+            target.attr('aria-expanded', expended);
         },
-        moreViewbtnToggle : function(e){
+        scrollMoveFunc : function(target){
+            var openTop = target.parents(this.obj).offset().top;
+            console.log(openTop);
+
+            $('body,html').animate({
+                'scrollTop' : openTop
+            }, 300);
+        },
+        viewMoreToggle : function(e){
             e.preventDefault();
-            this.showAllList = !this.showAllList;
-            this.toggleArrow(this.showAllList);
-            this.resetListLayout();
-            this.scrollMovePos();
-        },
-        toggleArrow : function(check){
-            this.contentListMoreBtn.toggleClass(this.opts.isArrowUp, check);  
-            this.contentListMoreBtn.toggleClass(this.opts.isArrowDown, !check);  
-        },
-        resetListLayout : function(){
-            if(this.showAllList){
-                this.contentList.addClass(this.opts.isShowClass);
-            }else {
-                this.contentList.eq(this.viewListNum-1).addClass(this.opts.isShowClass).nextAll().removeClass(this.opts.isShowClass);
+
+            if(this.showMoreBtn.hasClass(this.opts.iconDown) && this.listNum > this.viewListNum){
+                this.filtersContentList.not('.is-show').addClass(this.opts.isShow);
+                this.showMoreBtn.removeClass(this.opts.iconDown).addClass(this.opts.iconUp).text('show less');
+            }else{
+                for(var i=this.filtersContentList.length-1; i>this.viewListNum-1; i--){
+                    this.filtersContentList.eq(i).removeClass(this.opts.isShow);
+                }
+                this.showMoreBtn.removeClass(this.opts.iconUp).addClass(this.opts.iconDown).text('show more');
             }
-        },
-        scrollMovePos : function(){
-            var boxScrolltop = this.contentListWrap.offset().top;
-            $('html, body').animate({
-                'scrollTop' : boxScrolltop
-            }, 350);
         }
     };
 
