@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>DOM TEST</title>
+	<script src="../js/jquery-1.12.4.min.js"></script>
+</head>
+<body>
+
+<p>1234</p>
+
+
+<script>
+	$(function(){
+		var a = document.getElementsByTagName("p");
+		console.log(a);
+
+		var b = document.querySelectorAll("p");
+		console.log(b);
+
+		var c = $("p");
+		console.log(c);
+	});
+</script>
+</body>
+</html>
