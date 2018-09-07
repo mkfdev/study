@@ -69,10 +69,11 @@
 
 			var examObj8 = document.getElementsByClassName('exam_wrap')[7];
 			examObj8.getElementsByTagName('button')[0].onclick = function(){
-				var examChild = examObj8.getElementsByClassName('exam_q')[0].querySelectorAll('#active');
-				for(var i = 0; i < examChild.length; i++){
-					examChild[i].style.backgroundColor = 'yellow';
-				}
+				var examChild = examObj8.getElementsByClassName('exam_q').namedItem('active');
+				examChild[0].style.backgroundColor = 'yellow';
+				// for(var i = 0; i < examChild.length; i++){
+				// 	examChild[i].style.backgroundColor = 'yellow';
+				// }
 			};
 		}
 	</script>
