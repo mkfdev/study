@@ -12,7 +12,7 @@
 
         //childNodes를 사용할 때는 요소를 찾아야 하므로 nodeType 체크를 해준다.
         //children을 사용할 경우는 요소만 선택해 오므로 [index]로 해당 위치의 값만 찾아오면 된다. 훨씬 간편.
-        /*
+        
         window.onload = function(){
             var exWrap1 = document.getElementsByClassName('exam_wrap')[0];
             exWrap1.getElementsByTagName('button')[0].onclick = function(){
@@ -49,18 +49,18 @@
             var exWrap3 = document.getElementsByClassName('exam_wrap')[2];
             exWrap3.getElementsByTagName('button')[0].onclick = function(){
                 var exChild = exWrap3.getElementsByClassName('exam_q')[0].firstElementChild;
-                // var exElementChild = [];
-                // for(var i = 0; i < exChild.length; i++){
-                //  //nodeType이 요소타입일때만
-                //  if(exChild[i].nodeType == 1){
-                //      exElementChild.push(exChild[i]);
-                //  }
-                // }
+                var exElementChild = [];
+                for(var i = 0; i < exChild.length; i++){
+                 //nodeType이 요소타입일때만
+                 if(exChild[i].nodeType == 1){
+                     exElementChild.push(exChild[i]);
+                 }
+                }
 
-                // //div 요소의 첫번째 자식 요소
-                // for(var j = 0; j < exElementChild.length; j++){
-                //  exElementChild[j].children[0].style.color = 'red';
-                // }
+                //div 요소의 첫번째 자식 요소
+                for(var j = 0; j < exElementChild.length; j++){
+                 exElementChild[j].children[0].style.color = 'red';
+                }
             };
 
             var exWrap4 = document.getElementsByClassName('exam_wrap')[3];
@@ -83,14 +83,14 @@
                 exChild.style.backgroundColor = 'yellow';
 
                 // childNodes 사용하려면.
-                // var exElementChild = [];
-                // for(var i = 0; i < exChild.length; i++){
-                //  //nodeType이 요소타입일때만
-                //  if(exChild[i].nodeType == 1){
-                //      exElementChild.push(exChild[i]);
-                //  }
-                // }
-                // exElementChild[1].style.backgroundColor = 'yellow';
+                var exElementChild = [];
+                for(var i = 0; i < exChild.length; i++){
+                 //nodeType이 요소타입일때만
+                 if(exChild[i].nodeType == 1){
+                     exElementChild.push(exChild[i]);
+                 }
+                }
+                exElementChild[1].style.backgroundColor = 'yellow';
             };
 
             var exWrap6 = document.getElementsByClassName('exam_wrap')[5];
@@ -99,14 +99,14 @@
                 exChild.style.backgroundColor = 'yellow';
 
                 // childNodes 사용하려면.
-                // var exElementChild = [];
-                // for(var i = 0; i < exChild.length; i++){
-                //  //nodeType이 요소타입일때만
-                //  if(exChild[i].nodeType == 1){
-                //      exElementChild.push(exChild[i]);
-                //  }
-                // }
-                // exElementChild[2].style.backgroundColor = 'yellow';
+                var exElementChild = [];
+                for(var i = 0; i < exChild.length; i++){
+                 //nodeType이 요소타입일때만
+                 if(exChild[i].nodeType == 1){
+                     exElementChild.push(exChild[i]);
+                 }
+                }
+                exElementChild[2].style.backgroundColor = 'yellow';
             };
 
             var exWrap7 = document.getElementsByClassName('exam_wrap')[6];
@@ -125,86 +125,114 @@
                 }
             };
         }
-        */
-        window.onload = function(){
+        
+        // window.onload = function(){
 
-            //1번
-            var exam_wrap1 = document.getElementsByClassName('exam_wrap').item(0);
-            var wrap1 = exam_wrap1.getElementsByClassName('exam_q'), 
-                button1 = exam_wrap1.querySelectorAll('button');
+        //     //1번
+        //     var exam_wrap1 = document.getElementsByClassName('exam_wrap').item(0);
+        //     var wrap1 = exam_wrap1.getElementsByClassName('exam_q'), 
+        //         button1 = exam_wrap1.querySelectorAll('button');
             
-            button1[0].onclick = function(){
-                //console.log(wrap1[0].children);
-                wrap1[0].children.item(0).style.backgroundColor = "yellow";
+        //     button1[0].onclick = function(){
+        //         //console.log(wrap1[0].children);
+        //         wrap1[0].children.item(0).style.backgroundColor = "yellow";
 
-                for(var i=0; i< wrap1[0].children.length; i++){
-                    //console.log(wrap1[0].children.item(i).children.item(0));
-                    var emFirstElemet = wrap1[0].children.item(i).children;
-                    emFirstElemet.item(0).style.backgroundColor = "yellow";
-                }
-            };
+        //         for(var i=0; i< wrap1[0].children.length; i++){
+        //             //console.log(wrap1[0].children.item(i).children.item(0));
+        //             var emFirstElemet = wrap1[0].children.item(i).children;
+        //             emFirstElemet.item(0).style.backgroundColor = "yellow";
+        //         }
+        //     };
 
-            //2번
-            var exam_wrap2 = document.getElementsByClassName('exam_wrap').item(1);
-            var wrap2 = exam_wrap2.getElementsByClassName('exam_q'), 
-                button2 = exam_wrap2.querySelectorAll('button');
+        //     //2번
+        //     var exam_wrap2 = document.getElementsByClassName('exam_wrap').item(1);
+        //     var wrap2 = exam_wrap2.getElementsByClassName('exam_q'), 
+        //         button2 = exam_wrap2.querySelectorAll('button');
             
-            button2[0].onclick = function(){
-                //console.log(wrap1[0].children);
+        //     button2[0].onclick = function(){
+        //         //console.log(wrap1[0].children);
 
-                // last-child 를 구하려면 Len(총 개수-1) 이 필요한대, Len이 너무 길어져서, 반복 사용을 위해 변수로 선언함 
-                var len = wrap1[0].children.length
-                wrap2[0].children.item(len-1).style.backgroundColor = "yellow";
+        //         // last-child 를 구하려면 Len(총 개수-1) 이 필요한대, Len이 너무 길어져서, 반복 사용을 위해 변수로 선언함 
+        //         var len = wrap1[0].children.length
+        //         wrap2[0].children.item(len-1).style.backgroundColor = "yellow";
 
-                var len = wrap2[0].children.length
-                for(var i=0; i< len; i++){
-                    //console.log(wrap1[0].children.item(i).children.item(0));
-                    var emLastElement = wrap2[0].children.item(i).children;
-                    // child(div안의 em)도 div 내에서의 Len(총 개수-1) 값이 필요해서, 각 div를 i번 돌면서 Len을 가져와서 마지막 요소를 찾기 위해 childLen을 선언함
-                    var childLen = emLastElement.len;
-                    emLastElement.item(childLen-1).style.backgroundColor = "yellow";
-                }
-            };
+        //         var len = wrap2[0].children.length
+        //         for(var i=0; i< len; i++){
+        //             //console.log(wrap1[0].children.item(i).children.item(0));
+        //             var emLastElement = wrap2[0].children.item(i).children;
+        //             // child(div안의 em)도 div 내에서의 Len(총 개수-1) 값이 필요해서, 각 div를 i번 돌면서 Len을 가져와서 마지막 요소를 찾기 위해 childLen을 선언함
+        //             var childLen = emLastElement.len;
+        //             emLastElement.item(childLen-1).style.backgroundColor = "yellow";
+        //         }
+        //     };
 
-            //3번
-            var exam_wrap3 = document.getElementsByClassName('exam_wrap').item(2);
-            var wrap3 = exam_wrap3.getElementsByClassName('exam_q'), 
-                button3 = exam_wrap3.querySelectorAll('button');
+        //     //3번
+        //     var exam_wrap3 = document.getElementsByClassName('exam_wrap').item(2);
+        //     var wrap3 = exam_wrap3.getElementsByClassName('exam_q'), 
+        //         button3 = exam_wrap3.querySelectorAll('button');
             
-            button3[0].onclick = function(){
-                wrap3[0].firstElementChild.style.backgroundColor = "yellow";
-            };
+        //     button3[0].onclick = function(){
+        //         wrap3[0].firstElementChild.style.backgroundColor = "yellow";
+        //     };
 
-            //4번
-            var exam_wrap4 = document.getElementsByClassName('exam_wrap').item(3);
-            var wrap4 = exam_wrap4.getElementsByClassName('exam_q'), 
-                button4 = exam_wrap4.querySelectorAll('button');
+        //     //4번
+        //     var exam_wrap4 = document.getElementsByClassName('exam_wrap').item(3);
+        //     var wrap4 = exam_wrap4.getElementsByClassName('exam_q'), 
+        //         button4 = exam_wrap4.querySelectorAll('button');
             
-            button4[0].onclick = function(){
-                wrap4[0].lastElementChild.style.backgroundColor = "yellow";
-            };
+        //     button4[0].onclick = function(){
+        //         wrap4[0].lastElementChild.style.backgroundColor = "yellow";
+        //     };
 
-            //5번
-            var exam_wrap5 = document.getElementsByClassName('exam_wrap').item(4);
-            var wrap5 = exam_wrap5.getElementsByClassName('exam_q'), 
-                button5 = exam_wrap5.querySelectorAll('button');
-            
-            button5[0].onclick = function(){
-                wrap5[0].children.item(1).style.backgroundColor = "yellow";
+        //     //5번 
+        //    var exWrap5 = document.getElementsByClassName('exam_wrap')[4];
+        //     exWrap5.getElementsByTagName('button')[0].onclick = function(){
+        //         var exChild = exWrap5.getElementsByClassName('exam_q')[0].children[1];
+        //         exChild.style.backgroundColor = 'yellow';
 
-                for(var i=0; i< wrap5[0].children.length; i++){
-                    var emFirstElement = wrap5[0].children.item(i).children;
-                    console.log(emFirstElement);
+        //         // childNodes 사용하려면.
+        //         var exElementChild = [];
+        //         for(var i = 0; i < exChild.length; i++){
+        //          //nodeType이 요소타입일때만
+        //          if(exChild[i].nodeType == 1){
+        //              exElementChild.push(exChild[i]);
+        //          }
+        //         }
+        //         exElementChild[1].style.backgroundColor = 'yellow';
+        //     };
 
-                    if(emFirstElement.length != 0){
-                        console.log('em length 0')
-                        //console.log(emFirstElement[1]);
-                        //emFirstElement.item(1).style.backgroundColor = "yellow";
-                    }
-                    
-                }
-            };
-        }
+        //     var exWrap6 = document.getElementsByClassName('exam_wrap')[5];
+        //     exWrap6.getElementsByTagName('button')[0].onclick = function(){
+        //         var exChild = exWrap6.getElementsByClassName('exam_q')[0].children[2];
+        //         exChild.style.backgroundColor = 'yellow';
+
+        //         // childNodes 사용하려면.
+        //         var exElementChild = [];
+        //         for(var i = 0; i < exChild.length; i++){
+        //          //nodeType이 요소타입일때만
+        //          if(exChild[i].nodeType == 1){
+        //              exElementChild.push(exChild[i]);
+        //          }
+        //         }
+        //         exElementChild[2].style.backgroundColor = 'yellow';
+        //     };
+
+        //     var exWrap7 = document.getElementsByClassName('exam_wrap')[6];
+        //     exWrap7.getElementsByTagName('button')[0].onclick = function(){
+        //         var exChild = exWrap7.getElementsByClassName('exam_q')[0].children;
+        //         for(var i=3; i<exChild.length; i++){
+        //             exChild[i].style.backgroundColor = 'yellow';
+        //         }
+        //     };
+
+        //     var exWrap8 = document.getElementsByClassName('exam_wrap')[7];
+        //     exWrap8.getElementsByTagName('button')[0].onclick = function(){
+        //         var exChild = exWrap8.getElementsByClassName('exam_q')[0].children;
+        //         for(var i=0; i<2; i++){
+        //             exChild[i].style.backgroundColor = 'yellow';
+        //         }
+        //     };
+        // }
     </script>
 <!-- wrapper [s] -->
 <div id="wrapper">
